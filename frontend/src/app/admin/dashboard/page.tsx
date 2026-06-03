@@ -586,7 +586,7 @@ export default function AdminDashboard() {
                             <Edit size={14} />
                           </button>
                           <button 
-                            onClick={() => deleteProperty(prop)}
+                            onClick={() => deleteProperty(prop.id)}
                             className="p-2 hover:bg-red-50 rounded-lg text-neutral-400 hover:text-red-600 transition-all"
                           >
                             <Trash2 size={14} />
@@ -671,7 +671,7 @@ export default function AdminDashboard() {
                             <Edit size={14} />
                           </button>
                           <button 
-                            onClick={() => deleteProduct(prod)}
+                            onClick={() => deleteProduct(prod.id)}
                             className="p-2 hover:bg-red-50 rounded-lg text-neutral-400 hover:text-red-600 transition-all"
                           >
                             <Trash2 size={14} />
