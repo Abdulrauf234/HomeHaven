@@ -3,137 +3,200 @@
     {
       "id": "prop1",
       "images": [
-        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?auto=format&fit=crop&w=800&q=80"
       ],
-      "title": "The Obsidian Luxury Villa",
-      "type": "Villa",
-      "location": "Beverly Hills, CA",
-      "price": 4850000,
-      "bedrooms": 5,
-      "bathrooms": 6,
-      "description": "A gorgeous architectural masterpiece featuring a modern luxury black and white design palette. Features floor-to-ceiling glass walls, an infinity pool, smart automation, and professional chef kitchen.",
+      "title": "Classic Wedding Cake",
+      "type": "Cakes",
+      "location": "Main Bakery",
+      "price": 250,
+      "bedrooms": 3,
+      "bathrooms": 50,
+      "description": "Elegant three-tier wedding cake with smooth buttercream finish, delicate sugar flowers, and premium Madagascar vanilla sponge layers.",
       "availability": "Available"
     },
     {
       "id": "prop2",
       "images": [
-        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=800&q=80"
       ],
-      "title": "Noir Crest Penthouse",
-      "type": "Apartment",
-      "location": "Manhattan, NY",
-      "price": 2950000,
-      "bedrooms": 3,
-      "bathrooms": 3.5,
-      "description": "A luxury high-rise penthouse showcasing stunning skyline views. Adorned with dark marble, brass accents, private elevator access, and a wrap-around terrace.",
+      "title": "Assorted French Pastries Box",
+      "type": "Pastries",
+      "location": "Main Bakery",
+      "price": 45,
+      "bedrooms": 12,
+      "bathrooms": 12,
+      "description": "A delightful box of 12 assorted French pastries including eclairs, fruit tarts, mille-feuille, and croissants. Made fresh daily.",
       "availability": "Available"
     },
     {
       "id": "prop3",
       "images": [
-        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=800&q=80"
       ],
-      "title": "Vanguard Minimalist Duplex",
-      "type": "Duplex",
-      "location": "Miami, FL",
-      "price": 1850000,
-      "bedrooms": 4,
-      "bathrooms": 4,
-      "description": "Modern duplex design with a soaring double-height living room. Features concrete rendering, luxury Italian fittings, and a rooftop lounge.",
+      "title": "Artisan Sourdough Loaf",
+      "type": "Breads",
+      "location": "Main Bakery",
+      "price": 8,
+      "bedrooms": 1,
+      "bathrooms": 8,
+      "description": "Freshly baked artisan sourdough bread with a perfectly crisp crust, open crumb, and rich tangy flavour. Made with heritage grain and slow fermented.",
       "availability": "Available"
     },
     {
       "id": "prop4",
       "images": [
-        "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80"
       ],
-      "title": "Serene Oasis Bungalow",
-      "type": "Bungalow",
-      "location": "Malibu, CA",
-      "price": 3200000,
-      "bedrooms": 4,
-      "bathrooms": 3,
-      "description": "A beautifully renovated mid-century modern bungalow. Steps away from the ocean, featuring high wooden beamed ceilings, skylights, and indoor-outdoor living flow.",
-      "availability": "Sold"
+      "title": "Glazed Gourmet Doughnuts",
+      "type": "Doughnuts",
+      "location": "Main Bakery",
+      "price": 24,
+      "bedrooms": 6,
+      "bathrooms": 6,
+      "description": "Box of 6 gourmet doughnuts with assorted glazes and toppings including chocolate fudge, strawberry cream, and classic vanilla sugar.",
+      "availability": "Available"
     },
     {
       "id": "prop5",
       "images": [
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+        "https://images.unsplash.com/photo-1563805042-7684c8e9e5cb?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1612887726773-e64e21306a13?auto=format&fit=crop&w=800&q=80"
       ],
-      "title": "Apex Executive Headquarters",
-      "type": "Commercial Properties",
-      "location": "Silicon Valley, CA",
-      "price": 12500000,
-      "bedrooms": 0,
+      "title": "Signature Red Velvet Cake",
+      "type": "Cakes",
+      "location": "Main Bakery",
+      "price": 65,
+      "bedrooms": 1,
       "bathrooms": 12,
-      "description": "State of the art corporate building suitable for tech giants. Massive open plan layouts, fiber-optic backbone, premium conference halls, and private cafeteria.",
+      "description": "Our signature moist red velvet cake layered with rich cream cheese frosting. A timeless indulgence for any celebration.",
+      "availability": "Available"
+    },
+    {
+      "id": "prop6",
+      "images": [
+        "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80"
+      ],
+      "title": "Chocolate Croissant Pack",
+      "type": "Pastries",
+      "location": "Main Bakery",
+      "price": 20,
+      "bedrooms": 6,
+      "bathrooms": 6,
+      "description": "Pack of 6 freshly baked chocolate-filled croissants with a perfectly flaky, golden-brown butter pastry shell.",
+      "availability": "Available"
+    },
+    {
+      "id": "prop7",
+      "images": [
+        "https://images.unsplash.com/photo-1594373505763-e7049aaf5c2e?auto=format&fit=crop&w=800&q=80"
+      ],
+      "title": "Cinnamon Swirl Rolls",
+      "type": "Specialty Items",
+      "location": "Main Bakery",
+      "price": 30,
+      "bedrooms": 9,
+      "bathrooms": 9,
+      "description": "9 soft, pillowy cinnamon rolls drizzled with cream cheese icing. Baked to order for maximum warmth and freshness.",
+      "availability": "Available"
+    },
+    {
+      "id": "prop8",
+      "images": [
+        "https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?auto=format&fit=crop&w=800&q=80"
+      ],
+      "title": "Strawberry Charlotte Cake",
+      "type": "Cakes",
+      "location": "Main Bakery",
+      "price": 80,
+      "bedrooms": 1,
+      "bathrooms": 10,
+      "description": "Elegant French charlotte cake with layers of ladyfingers, fresh strawberry mousse, and a mirror glaze. A showstopping centrepiece.",
       "availability": "Available"
     }
   ],
   "products": [
     {
-      "id": "prod1",
-      "image": "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80",
-      "name": "Bouclé Accent Lounge Chair",
-      "price": 850,
-      "description": "Luxury upholstered lounge chair in creamy white bouclé fabric, featuring solid oak frame legs. Designed for maximum comfort and premium aesthetic.",
-      "category": "Furniture",
+      "id": "snack1",
+      "image": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80",
+      "name": "Chocolate Chip Cookies",
+      "price": 18,
+      "description": "Dozen freshly baked, chewy chocolate chip cookies made with premium Belgian chocolate chips and real butter.",
+      "category": "Cookies",
       "availability": "In Stock",
-      "stock": 12
+      "stock": 50
     },
     {
-      "id": "prod2",
-      "image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
-      "name": "Matte Black Smart Espresso Machine",
-      "price": 1450,
-      "description": "Premium bean-to-cup espresso maker. Intelligent touch control, customizable profile settings, and sleek metal chassis to elevate any luxury kitchen.",
-      "category": "Home Appliances",
+      "id": "snack2",
+      "image": "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=800&q=80",
+      "name": "Luxury Chocolate Truffles",
+      "price": 35,
+      "description": "Box of 16 handcrafted chocolate truffles in assorted flavours — dark, milk, hazelnut praline, and sea salt caramel.",
+      "category": "Chocolates",
       "availability": "In Stock",
-      "stock": 5
+      "stock": 30
     },
     {
-      "id": "prod3",
-      "image": "https://images.unsplash.com/photo-1608248597481-496100c80836?auto=format&fit=crop&w=800&q=80",
-      "name": "Ambient LED Sound Bar Suite",
-      "price": 599,
-      "description": "Immersive Dolby Atmos sound system with integrated customizable smart backlighting. Elegant minimal bar matches perfectly under premium TV mounts.",
-      "category": "Electronics",
+      "id": "snack3",
+      "image": "https://images.unsplash.com/photo-1577222409054-944a9557b779?auto=format&fit=crop&w=800&q=80",
+      "name": "Gem Crispy Celebration Hamper",
+      "price": 120,
+      "description": "A beautifully curated gift hamper packed with our finest cookies, chocolates, macarons, and a jar of artisan jam.",
+      "category": "Hampers",
       "availability": "In Stock",
-      "stock": 8
+      "stock": 10
     },
     {
-      "id": "prod4",
-      "image": "https://images.unsplash.com/photo-1580481072645-022f9a6dbf27?auto=format&fit=crop&w=800&q=80",
-      "name": "Monolithic Ceramic Vase Set",
-      "price": 180,
-      "description": "Handcrafted textured stoneware vases in black, charcoal, and warm grey. Perfect centerpieces for minimalist consoles.",
-      "category": "Home Decor",
+      "id": "snack4",
+      "image": "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=800&q=80",
+      "name": "Mini Vanilla Cupcakes",
+      "price": 22,
+      "description": "Pack of 12 bite-sized vanilla cupcakes crowned with swirled buttercream frosting and coloured sprinkles.",
+      "category": "Cupcakes",
+      "availability": "In Stock",
+      "stock": 40
+    },
+    {
+      "id": "snack5",
+      "image": "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=80",
+      "name": "Party Small Chops Box",
+      "price": 45,
+      "description": "Assorted savory finger foods perfect for small gatherings. Includes spring rolls, samosas, puff-puff, and chicken skewers.",
+      "category": "Small Chops",
       "availability": "In Stock",
       "stock": 25
     },
     {
-      "id": "prod5",
-      "image": "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80",
-      "name": "Damascus Professional Knife Set",
-      "price": 320,
-      "description": "6-piece chef knife bundle made with 67 layers of Japanese Damascus steel. Includes black walnut magnetic block.",
-      "category": "Kitchen Equipment",
-      "availability": "In Stock",
-      "stock": 15
-    },
-    {
-      "id": "prod6",
-      "image": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80",
-      "name": "Smart Biometric Security Door Lock",
-      "price": 450,
-      "description": "Top-tier deadbolt lock with fingerprint scanner, digital keypad, mobile application support, and mechanical keys. Finished in brushed dark obsidian.",
-      "category": "Security Devices",
+      "id": "snack6",
+      "image": "https://images.unsplash.com/photo-1560180474-e8563fd75bab?auto=format&fit=crop&w=800&q=80",
+      "name": "Macaron Gift Box",
+      "price": 28,
+      "description": "Colourful assortment of 12 French macarons in classic flavours — rose, pistachio, lemon, salted caramel, and chocolate.",
+      "category": "Gift Sets",
       "availability": "In Stock",
       "stock": 20
+    },
+    {
+      "id": "snack7",
+      "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
+      "name": "Assorted Shortbread Cookies",
+      "price": 15,
+      "description": "Buttery Scottish shortbread biscuits in classic round and finger shapes. Perfect with tea or coffee.",
+      "category": "Cookies",
+      "availability": "In Stock",
+      "stock": 60
+    },
+    {
+      "id": "snack8",
+      "image": "https://images.unsplash.com/photo-1590080874088-eec64895b423?auto=format&fit=crop&w=800&q=80",
+      "name": "Premium Dark Chocolate Bar",
+      "price": 12,
+      "description": "Single-origin 72% dark chocolate bar with notes of berry and roasted nut. Ethically sourced from West African cacao farms.",
+      "category": "Chocolates",
+      "availability": "In Stock",
+      "stock": 80
     }
   ],
   "enquiries": []

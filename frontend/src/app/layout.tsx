@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Home Haven | Premium Luxury Real Estate & E-Commerce",
-  description: "Discover, buy, and rent verified premium properties, villas, apartments, and duplexes. Explore our exclusive home decor and furniture shop.",
-  keywords: "luxury real estate, rent apartments, buy villa, duplex, home decor shop, luxury home furniture",
-  authors: [{ name: "Home Haven Team" }],
+  title: "Gem Crispy Confectionery | Premium Luxury Bakery & Confectionery",
+  description: "Discover, buy, and explore premium bakery items, cakes, pastries, and confectionery. Enjoy our curated shop and exclusive treats.",
   openGraph: {
-    title: "Home Haven | Luxury Real Estate & Premium Living Store",
-    description: "Discover, buy, and rent verified premium properties, villas, apartments, and duplexes.",
+    title: "Gem Crispy Confectionery | Luxury Bakery & Premium Treats",
+    description: "Discover, buy, and explore premium bakery items, cakes, pastries, and confectionery.",
     type: "website",
     locale: "en_US",
   }

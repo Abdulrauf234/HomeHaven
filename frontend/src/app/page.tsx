@@ -7,9 +7,18 @@ import {
   Home, Search, MessageCircle, CheckCircle, Menu, X, 
   ChevronLeft, ChevronRight, Star, User, MapPin, Mail, 
   Phone, Clock, Heart, ShoppingCart, Award, Shield, 
-  TrendingUp, Users, Eye, HelpCircle, ArrowRight
+  TrendingUp, Users, Eye, HelpCircle, ArrowRight, Upload, Check
 } from 'lucide-react';
 import { api, Property, Product } from '@/lib/api';
+
+const navItems = [
+  { label: 'Home', href: '#home' },
+  { label: 'Products', href: '#properties' },
+  { label: 'Price List', href: '#apartments' },
+  { label: 'Custom Orders', href: '#shop' },
+  { label: 'About Us', href: '#about' },
+  { label: 'Contact', href: '#contact' }
+];
 
 export default function HomePage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -40,29 +49,52 @@ export default function HomePage() {
   // Mobile Menu State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [activeNav, setActiveNav] = useState('Home');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     fetchData();
-    // Load wishlist
-    const savedWish = localStorage.getItem('haven_wishlist');
-    if (savedWish) setWishlist(JSON.parse(savedWish));
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+
+      const sections = ['home', 'properties', 'apartments', 'shop', 'about', 'contact'];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            let label = 'Home';
+            if (section === 'properties') label = 'Products';
+            if (section === 'apartments') label = 'Price List';
+            if (section === 'shop') label = 'Custom Orders';
+            if (section === 'about') label = 'About Us';
+            if (section === 'contact') label = 'Contact';
+            setActiveNav(label);
+            break;
+          }
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const fetchData = async () => {
     try {
-      const props = await api.getProperties();
-      const prods = await api.getProducts();
+      const props = await api.getProperties({});
+      const prods = await api.getProducts({});
       setProperties(props);
       setProducts(prods);
     } catch (e) {
-      console.error("Error loading data", e);
+      console.error('Error fetching data:', e);
     }
   };
-
-  if (!mounted) {
-    return <div className="bg-white min-h-screen" />;
-  }
 
   const handlePropertyFilter = async (type: string) => {
     setSelectedPropertyType(type);
@@ -128,13 +160,13 @@ export default function HomePage() {
     const phoneNumber = '+2348000000000'; // Target phone number (replace with custom or default)
 
     if (type === 'buy' && 'location' in item) {
-      message = `Hello Home Haven, I am highly interested in purchasing the property: "${item.title}" located at ${item.location}. Price: $${item.price.toLocaleString()}. Please details on payment methods.`;
+      message = `Hello Gem Crispy Confectionery, I am interested in ordering: "${item.title}" from ${item.location}. Price: $${item.price.toLocaleString()}. Please share payment details and availability.`;
     } else if (type === 'inspection' && 'location' in item) {
-      message = `Hello Home Haven, I would like to book a physical inspection viewing for the property: "${item.title}" located at ${item.location}. (Price: $${item.price.toLocaleString()}).`;
+      message = `Hello Gem Crispy, I would like to book a tasting session for the product: "${item.title}" from ${item.location}. Price: $${item.price.toLocaleString()}. When is the best time?`;
     } else if (type === 'agent' && 'location' in item) {
-      message = `Hello Home Haven, I want to contact the representative agent regarding "${item.title}". Please connect me.`;
+      message = `Hello Gem Crispy Confectionery, I want to discuss a custom order regarding "${item.title}". Please connect me with your team.`;
     } else if (type === 'product' && 'category' in item) {
-      message = `Hello Home Haven, I am interested in purchasing "${item.name}" from your eShop store. Category: ${item.category}. Price: $${item.price.toLocaleString()}.`;
+      message = `Hello Gem Crispy Confectionery, I am interested in ordering "${item.name}" from your collection. Category: ${item.category}. Price: $${item.price.toLocaleString()}. What are the available flavors?`;
     }
 
     // Log the enquiry
@@ -155,67 +187,67 @@ export default function HomePage() {
     window.open(`https://wa.me/${phoneNumber}?text=${encoded}`, '_blank');
   };
 
-  // Property type categories
-  const propertyTypes = ['All', 'Apartment', 'Duplex', 'Bungalow', 'Villa', 'Commercial Properties'];
+  // Product type categories (Bakery items)
+  const propertyTypes = ['All', 'Cakes', 'Pastries', 'Breads', 'Doughnuts', 'Specialty Items'];
   
-  // Product categories
-  const productCategories = ['All', 'Furniture', 'Home Appliances', 'Electronics', 'Home Decor', 'Kitchen Equipment', 'Security Devices'];
+  // Confectionery categories (Shop items)
+  const productCategories = ['All', 'Cookies', 'Chocolates', 'Gift Sets', 'Cupcakes', 'Small Chops', 'Hampers'];
 
   const benefits = [
-    { title: 'Verified Properties', desc: 'Every property undergoes extensive background checks for total legal peace of mind.', icon: Shield },
-    { title: 'Trusted Agents', desc: 'Work with elite, highly certified brokers dedicated to find your exact match.', icon: Users },
-    { title: 'Affordable Housing', desc: 'Premium luxury spaces styled with smart options matching your high standard budget.', icon: TrendingUp },
-    { title: 'Fast Acquisition', desc: 'Streamlined purchasing process getting you your keys in record efficiency.', icon: Award },
-    { title: 'Secure Transactions', desc: 'Secure escrow channels and complete transaction transparency.', icon: CheckCircle },
-    { title: 'Customer Support', desc: 'Round-the-clock dedicated concierge support for all booking needs.', icon: HelpCircle }
+    { title: 'Verified Products', desc: 'Every baked good is crafted with premium ingredients and strict quality checks.', icon: Shield },
+    { title: 'Trusted Bakers', desc: 'Work with elite, experienced pastry chefs dedicated to perfect your treat.', icon: Users },
+    { title: 'Affordable Delights', desc: 'Premium confectionery at prices that delight every palate.', icon: TrendingUp },
+    { title: 'Fast Delivery', desc: 'Swift order processing to get your treats fresh and fast.', icon: Award },
+    { title: 'Secure Transactions', desc: 'Secure checkout and transparent order tracking.', icon: CheckCircle },
+    { title: 'Customer Support', desc: '24/7 concierge support for all your confectionery needs.', icon: HelpCircle }
   ];
 
   const reviews = [
     {
-      name: 'Victoria Vance',
-      photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+      name: 'Chioma Okafor',
+      photo: 'https://images.unsplash.com/photo-1491841573634-28fb1ddc5da6?auto=format&fit=crop&w=150&q=80',
       rating: 5,
-      text: 'Home Haven made finding my luxury villa in Beverly Hills absolutely seamless. The glassmorphism and modern finish of the home matched the high standard of service they provided.',
-      property: 'The Obsidian Luxury Villa'
+      text: 'Gem Crispy delivered an exquisite three-tier chocolate cake for my wedding. Every layer was perfectly crafted, and guests couldn\'t stop raving about the taste and presentation.',
+      property: 'Custom Wedding Cake'
     },
     {
-      name: 'Marcus Sterling',
-      photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80',
+      name: 'Tunde Adeyemi',
+      photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
       rating: 5,
-      text: 'I bought my pent house through Home Haven. The inspection booking was simple and the subsequent paperwork took less than a week. Highly recommended!',
-      property: 'Noir Crest Penthouse'
+      text: 'I ordered their premium pastry assortment for a corporate event. The variety was stunning, quality impeccable, and delivery timing was absolutely on point.',
+      property: 'Corporate Pastry Collection'
     },
     {
       name: 'Elena Rostova',
       photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
       rating: 5,
-      text: 'Their eShop was an amazing bonus! I bought the Bouclé Lounge chairs and the Damascus chef set to furnish my new duplex. Absolute top class quality.',
-      property: 'Vanguard Minimalist Duplex'
+      text: 'The eShop’s selection of artisanal breads is unmatched. My family loves the sourdough, and the bakery staff are incredibly helpful.',
+      property: 'Artisanal Sourdough Bread'
     }
   ];
 
   const testimonials = [
     {
-      client: 'Alexander & Sophia K.',
-      achievement: 'Acquired Modern Villa',
-      story: 'We were looking for an architectural statement home that offered security and ultra-modern automation. Home Haven took our criteria and within 48 hours booked an exclusive private viewing. The transaction was handled with absolute discretion and speed.',
-      videoThumbnail: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80',
-      tag: 'Success Story'
+      client: 'Nia & Samuel',
+      achievement: 'Wedding Reception Catering',
+      story: 'We entrusted Gem Crispy with our wedding cake and dessert spread. They exceeded every expectation—from the design consultation to flawless execution on the day. Our guests are still talking about those delicious treats!',
+      videoThumbnail: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80',
+      tag: 'Wedding Showcase'
     },
     {
-      client: 'Jonathan Davies',
-      achievement: 'Investment Portfolio Growth',
-      story: 'As a commercial property investor, speed and verified details are critical. Home Haven provides transparent details and direct contact routes that drastically cut down negotiation overheads. Their portfolio is second to none.',
-      videoThumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80',
-      tag: 'Before & After'
+      client: 'Corporate Events Manager',
+      achievement: 'Premium Confectionery Partnership',
+      story: 'For our company retreats and events, Gem Crispy has become our trusted premium partner. Their consistency, professionalism, and exquisite taste profiles elevate every corporate function we host. Highly recommended!',
+      videoThumbnail: 'https://images.unsplash.com/photo-1585518419759-5a14ed9ead0f?auto=format&fit=crop&w=600&q=80',
+      tag: 'Corporate Excellence'
     }
   ];
 
   const team = [
-    { name: 'Sarah Vance', role: 'CEO & Founder', bio: 'With 15+ years in luxury real estate, Sarah guides the vision of premium living at Home Haven.', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80' },
-    { name: 'David Miller', role: 'Senior Property Broker', bio: 'David specializes in high-end villas and beachfront penthouses in California.', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Elena Thompson', role: 'Customer Relations Lead', bio: 'Elena ensures our inspection booking workflow is completely flawless.', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80' },
-    { name: 'James Carter', role: 'E-Shop Procurement Director', bio: 'James sources our luxury home decor and designer furniture from global creators.', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80' }
+    { name: 'Amara Okafor', role: 'Head Pastry Chef & Co-Founder', bio: 'Le Cordon Bleu trained with 18 years crafting premium cakes, pastries, and custom confectionery creations for elite events.', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80' },
+    { name: 'Kunle Adebayo', role: 'Master Confectioner', bio: 'Specialist in premium chocolates, bonbons, and artisanal sweets with international certification in fine confectionery.', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80' },
+    { name: 'Zara Taiwo', role: 'Production & Quality Manager', bio: 'Ensures every product meets our exacting hygiene and quality standards before reaching our valued customers.', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=300&q=80' },
+    { name: 'Chidi Ugwu', role: 'Artisanal Bread Master', bio: 'Traditional sourdough specialist with passion for heritage grain baking and organic fermentation techniques.', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80' }
   ];
 
   const handleNextImage = (propId: string, max: number) => {
@@ -233,45 +265,75 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-white min-h-screen selection:bg-black selection:text-white">
+    <div className="bg-[var(--background)] min-h-screen text-[var(--text)] selection:bg-[var(--accent)] selection:text-white">
       
       {/* Floating Glassmorphism Navbar */}
-      <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-        <nav className="w-full max-w-6xl glass rounded-full py-4 px-6 md:px-8 flex items-center justify-between shadow-lg">
-          {/* Logo */}
-          <a href="#home" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-sm">H</span>
-            </div>
-            <span className="text-black font-extrabold tracking-widest text-lg uppercase font-serif">Home Haven</span>
-          </a>
-
-          {/* Navigation Links - Desktop */}
-          <div className="hidden lg:flex items-center space-x-8 text-sm font-medium">
-            <a href="#home" className="hover:text-neutral-500 transition-colors">Home</a>
-            <a href="#properties" className="hover:text-neutral-500 transition-colors">Properties</a>
-            <a href="#apartments" className="hover:text-neutral-500 transition-colors">Apartments</a>
-            <a href="#shop" className="hover:text-neutral-500 transition-colors">Shop</a>
-            <a href="#reviews" className="hover:text-neutral-500 transition-colors">Reviews</a>
-            <a href="#team" className="hover:text-neutral-500 transition-colors">Team</a>
-            <a href="#about" className="hover:text-neutral-500 transition-colors">About</a>
-            <a href="#contact" className="hover:text-neutral-500 transition-colors">Contact</a>
+      <div className={`fixed left-0 right-0 z-50 flex justify-center px-4 transition-all duration-500 ${isScrolled ? 'top-3' : 'top-6'}`}>
+        <nav className={`w-full max-w-6xl rounded-full py-4 px-6 md:px-8 flex items-center justify-between shadow-lg transition-all duration-300 ${
+          isScrolled 
+            ? 'glass border-[rgba(74,44,29,0.15)] py-3 shadow-xl' 
+            : 'bg-white/40 border-[rgba(74,44,29,0.05)] backdrop-blur-sm'
+        }`}>
+          {/* Logo & Search Area */}
+          <div className="flex items-center space-x-3">
+            <a href="#home" className="flex items-center space-x-2">
+              <div className="w-9 h-9 bg-[var(--accent)] rounded-full flex items-center justify-center border border-[var(--primary)] shadow-sm">
+                <span className="text-[var(--secondary)] font-extrabold text-sm font-serif">G</span>
+              </div>
+              <span className="text-[var(--accent)] font-extrabold tracking-wider text-base uppercase font-serif hidden sm:inline-block">Gem Crispy</span>
+            </a>
+            <button 
+              onClick={() => {
+                const searchInput = document.querySelector('input[placeholder*="Search"]');
+                if (searchInput) {
+                  searchInput.scrollIntoView({ behavior: 'smooth' });
+                  (searchInput as HTMLInputElement).focus();
+                }
+              }}
+              className="w-8 h-8 rounded-full border border-[rgba(74,44,29,0.12)] flex items-center justify-center text-[var(--accent)] hover:bg-[var(--secondary)] hover:border-[var(--primary)] transition-all cursor-pointer"
+            >
+              <Search size={14} />
+            </button>
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Navigation Links - Desktop Centered */}
+          <div className="hidden lg:flex items-center space-x-6 text-xs uppercase tracking-widest font-bold">
+            {navItems.map((item) => (
+              <a 
+                key={item.label}
+                href={item.href} 
+                onClick={() => setActiveNav(item.label)}
+                className="relative py-2 text-[var(--accent)] hover:text-[var(--primary)] transition-colors"
+              >
+                {item.label}
+                {activeNav === item.label && (
+                  <motion.div 
+                    layoutId="activeUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--primary)] rounded-full"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </a>
+            ))}
+          </div>
+
+          {/* CTA - WhatsApp Button on the right */}
+          <div className="hidden md:flex items-center">
             <a 
-              href="#contact" 
-              className="bg-black hover:bg-neutral-800 text-white font-medium text-sm px-6 py-2.5 rounded-full transition-all duration-300 transform hover:scale-[1.02]"
+              href="https://wa.me/2348000000000" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-[1.03] shadow-md flex items-center space-x-2"
             >
-              Book Inspection
+              <MessageCircle size={14} />
+              <span>Order Now</span>
             </a>
           </div>
 
           {/* Hamburger Menu - Mobile */}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-black hover:text-neutral-600 transition-colors p-1"
+            className="lg:hidden text-[var(--accent)] hover:text-[var(--primary)] transition-colors p-1"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -285,92 +347,225 @@ export default function HomePage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-x-4 top-24 z-40 bg-white border border-neutral-100 rounded-3xl p-6 shadow-2xl lg:hidden flex flex-col space-y-4"
+            className="fixed inset-x-4 top-24 z-40 bg-[var(--background)] border border-[rgba(74,44,29,0.1)] rounded-3xl p-6 shadow-2xl lg:hidden flex flex-col space-y-4"
           >
-            <a href="#home" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Home</a>
-            <a href="#properties" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Properties</a>
-            <a href="#apartments" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Apartments</a>
-            <a href="#shop" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Shop</a>
-            <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Reviews</a>
-            <a href="#team" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">Team</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black border-b border-neutral-50">About</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2 text-lg font-medium text-black pb-4">Contact</a>
+            {navItems.map((item) => (
+              <a 
+                key={item.label}
+                href={item.href} 
+                onClick={() => {
+                  setActiveNav(item.label);
+                  setMobileMenuOpen(false);
+                }} 
+                className={`py-2 text-base font-semibold text-[var(--accent)] border-b border-[rgba(74,44,29,0.05)] transition-colors flex items-center justify-between ${activeNav === item.label ? 'text-[var(--primary)] font-bold' : ''}`}
+              >
+                <span>{item.label}</span>
+                {activeNav === item.label && <span className="text-[var(--primary)]">•</span>}
+              </a>
+            ))}
             <a 
-              href="#contact" 
+              href="https://wa.me/2348000000000" 
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
-              className="bg-black hover:bg-neutral-800 text-white font-medium py-3 rounded-full text-center block"
+              className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-center py-3 rounded-full uppercase tracking-wider text-sm flex items-center justify-center space-x-2"
             >
-              Book Inspection
+              <MessageCircle size={16} />
+              <span>Order Now</span>
             </a>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* HERO SECTION */}
-      <section id="home" className="min-h-screen pt-32 pb-16 flex items-center bg-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          
-          {/* Left Side: Generated 3D House Image */}
-          <div className="flex justify-center relative order-2 lg:order-1">
-            <div className="absolute inset-0 bg-radial-gradient from-neutral-100 to-transparent opacity-50 blur-3xl -z-10" />
-            <motion.div 
-              animate={{ y: [0, -15, 0] }}
-              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-              className="relative w-full max-w-lg aspect-square overflow-hidden rounded-[2.5rem] shadow-2xl border border-neutral-100"
-            >
-              <Image 
-                src="/images/hero.png" 
-                alt="Luxury Home Haven Property Illustration" 
-                fill 
-                className="object-cover"
-                priority
-              />
-            </motion.div>
-          </div>
+      <section id="home" className="relative min-h-screen pt-32 pb-16 flex items-center bg-[var(--background)] overflow-hidden">
+        {/* Background decorative elements: subtle floating lines and dots */}
+        <div className="absolute top-24 left-10 w-24 h-24 pattern-dots opacity-30 pointer-events-none select-none" />
+        <div className="absolute bottom-16 left-1/4 w-32 h-32 pattern-dots opacity-20 pointer-events-none select-none animate-pulse-slow" />
+        <div className="absolute top-1/3 right-10 w-20 h-40 border-r border-dashed border-[rgba(74,44,29,0.1)] rounded-r-full opacity-40 pointer-events-none select-none" />
 
-          {/* Right Side: Copywriting Content */}
-          <div className="space-y-8 order-1 lg:order-2">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+          
+          {/* Left Side: Editorial copywriting & features */}
+          <div className="space-y-8">
             <div className="space-y-4">
-              <span className="text-sm font-extrabold uppercase tracking-widest text-neutral-400">Welcome to Excellence</span>
-              <h1 className="text-5xl lg:text-7xl font-light tracking-tight text-black font-serif leading-tight">
-                Architectural <br />
-                <span className="font-semibold">Masterpieces</span>
+              <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-[rgba(212,160,23,0.3)] bg-[rgba(247,233,215,0.4)] text-[var(--primary)] font-bold text-[10px] tracking-widest uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
+                <span>PREMIUM CONFECTIONERY</span>
+              </div>
+              <h1 className="text-5xl lg:text-7xl font-bold tracking-tight text-[var(--accent)] font-serif leading-[1.1] text-balance">
+                Baked with <span className="text-[var(--primary)] font-light italic">Passion</span>,<br />
+                Made for <span className="text-[var(--primary)]">You</span>
               </h1>
             </div>
             
-            <div className="space-y-4 text-neutral-500 font-light leading-relaxed max-w-lg">
-              <p>
-                At Home Haven, we represent the absolute pinnacle of luxury real estate. We curate verified, ultra-exclusive properties that reflect unparalleled craftsmanship, striking modern aesthetics, and prestigious locations.
-              </p>
-              <p>
-                Whether you seek a glass-framed oceanfront villa, a double-height minimalist duplex, or a high-rise city penthouse, our portfolio provides elite listings matching your sophisticated taste.
-              </p>
-              <p>
-                We handle the entire process with meticulous detail, ensuring complete security, verified listings, and direct access to personal concierge viewings.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+            <p className="text-[var(--accent)] opacity-85 font-light leading-relaxed max-w-lg text-base">
+              Experience the sublime taste of our hand-crafted cakes, melt-in-your-mouth pastries, artisanal sourdough breads, and custom confections. Baked fresh daily with heritage techniques and natural premium ingredients.
+            </p>
+            
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <a 
                 href="#properties" 
-                className="bg-black hover:bg-neutral-800 text-white font-medium text-center px-8 py-3.5 rounded-full transition-all duration-300 flex items-center justify-center space-x-2"
+                className="border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--secondary)] font-semibold text-xs uppercase tracking-widest px-8 py-4 rounded-full transition-all duration-300"
               >
-                <span>Search Properties</span>
-                <ArrowRight size={16} />
+                Learn More
               </a>
               <a 
-                href="#contact" 
-                className="border border-neutral-300 hover:border-black text-black font-medium text-center px-8 py-3.5 rounded-full transition-all duration-300"
+                href="https://wa.me/2348000000000" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-xs uppercase tracking-widest px-8 py-4 rounded-full transition-all duration-300 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
               >
-                Book Inspection
+                <MessageCircle size={16} />
+                <span>Order on WhatsApp</span>
               </a>
-              <button 
-                onClick={() => window.open('https://wa.me/2348000000000', '_blank')}
-                className="bg-[#25D366] hover:bg-[#20ba5a] text-white font-medium text-center px-8 py-3.5 rounded-full transition-all duration-300 flex items-center justify-center space-x-2"
+            </div>
+
+            {/* Baker Portrait and Mini Feature Card */}
+            <div className="flex flex-wrap gap-6 pt-8 items-center border-t border-[rgba(74,44,29,0.08)] mt-8">
+              {/* Chef Portrait Card */}
+              <div className="flex items-center gap-3 bg-white/60 backdrop-blur-md border border-[rgba(74,44,29,0.06)] rounded-full p-2 pr-6 shadow-sm">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--primary)] flex-shrink-0">
+                  <Image 
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80" 
+                    alt="Head Pastry Chef Amara Okafor" 
+                    fill 
+                    className="object-cover" 
+                  />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--accent)]">Amara Okafor</h4>
+                  <p className="text-[10px] text-gray-500 font-medium">Head Pastry Chef</p>
+                </div>
+              </div>
+              
+              {/* Feature Card */}
+              <div className="flex items-center gap-3 bg-white/60 backdrop-blur-md border border-[rgba(212,160,23,0.15)] rounded-2xl p-2.5 px-4 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[var(--secondary)] flex items-center justify-center text-[var(--primary)] text-sm">
+                  ✨
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--accent)]">Fresh Daily</h4>
+                  <p className="text-[10px] text-gray-500 font-medium leading-none mt-0.5">Always Delicious</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side: Giant Chocolate Cake and Floating Cards */}
+          <div className="relative flex justify-center items-center w-full min-h-[450px] lg:min-h-[550px] py-12">
+            {/* Background glow and abstract chocolate shape */}
+            <div className="absolute inset-0 flex items-center justify-center -z-10 overflow-visible">
+              <div className="absolute w-[80%] h-[80%] bg-[var(--primary)] rounded-full opacity-10 filter blur-[80px]" />
+              
+              {/* Dark chocolate abstract shape */}
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-[110%] h-[110%] fill-[#361e12] opacity-15 filter blur-xs animate-pulse-slow">
+                <path d="M43.2,-73.4C55.7,-67.2,65.3,-54.6,71.2,-40.4C77,-26.2,79.1,-10.4,78.2,5C77.3,20.4,73.4,35.4,65.3,47.7C57.3,60.1,45.2,69.7,31.5,75.4C17.7,81.1,2.4,82.8,-12.9,80.6C-28.3,78.3,-43.7,72.2,-55.5,62.2C-67.4,52.2,-75.7,38.3,-79.6,23.3C-83.5,8.2,-82.9,-8,-78.3,-22.6C-73.8,-37.2,-65.3,-50.2,-53.4,-56.7C-41.5,-63.3,-26.2,-63.3,-12.2,-67.9C1.8,-72.5,15.8,-81.6,30.8,-79.7C45.8,-77.8,61.8,-64.8,43.2,-73.4Z" transform="translate(100 100)" />
+              </svg>
+            </div>
+
+            {/* Floating particles around the cake */}
+            <div className="absolute inset-0 z-10 pointer-events-none select-none">
+              {/* Chocolate Piece 1 */}
+              <motion.div 
+                animate={{ y: [0, -15, 0], x: [0, 8, 0], rotate: [0, 25, 0] }}
+                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+                className="absolute top-20 right-10 text-3xl filter drop-shadow-md"
               >
-                <MessageCircle size={18} />
-                <span>WhatsApp Agent</span>
-              </button>
+                🍫
+              </motion.div>
+              {/* Chocolate Piece 2 */}
+              <motion.div 
+                animate={{ y: [0, 10, 0], x: [0, -6, 0], rotate: [0, -15, 0] }}
+                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                className="absolute bottom-16 left-8 text-2xl filter drop-shadow-md"
+              >
+                🍫
+              </motion.div>
+              {/* Sparkle 1 */}
+              <motion.div 
+                animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.5, 1, 0.5] }}
+                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                className="absolute top-1/3 left-6 text-xl text-[var(--primary)] filter drop-shadow-sm"
+              >
+                ✨
+              </motion.div>
+              {/* Sparkle 2 */}
+              <motion.div 
+                animate={{ scale: [1.2, 0.8, 1.2], opacity: [1, 0.4, 1] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="absolute bottom-1/3 right-4 text-lg text-[var(--primary)] filter drop-shadow-sm"
+              >
+                ✨
+              </motion.div>
+            </div>
+
+            {/* Rotating luxury quality seal */}
+            <div className="absolute top-0 right-4 md:right-12 z-20">
+              <div className="w-24 h-24 md:w-28 md:h-28 animate-spin-slow select-none filter drop-shadow-md">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                  <defs>
+                    <path id="sealCirclePath" d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
+                  </defs>
+                  <circle cx="50" cy="50" r="34" fill="none" stroke="#D4A017" strokeWidth="1" strokeDasharray="3 2" />
+                  <circle cx="50" cy="50" r="41" fill="none" stroke="#D4A017" strokeWidth="1.5" />
+                  <text fill="#4A2C1D" fontSize="7.8" fontWeight="bold" letterSpacing="1">
+                    <textPath href="#sealCirclePath">
+                      ★ PREMIUM QUALITY ★ LUXURY BAKERY
+                    </textPath>
+                  </text>
+                  <polygon points="50,34 53,41 60,41 55,45 57,52 50,48 43,52 45,45 40,41 47,41" fill="#D4A017" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Shadow beneath the cake */}
+            <motion.div 
+              animate={{ scale: [1, 0.85, 1], opacity: [0.3, 0.15, 0.3] }}
+              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+              className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[60%] h-6 bg-black/30 rounded-full blur-xl -z-10"
+            />
+
+            {/* Cake container with float animation */}
+            <motion.div 
+              animate={{ y: [0, -18, 0] }}
+              transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+              className="relative w-[80%] max-w-[380px] aspect-square z-10 flex items-center justify-center"
+            >
+              <Image 
+                src="/images/ice_cream_cup.png" 
+                alt="Luxury Ice Cream Cup" 
+                width={400}
+                height={400}
+                className="object-contain filter drop-shadow-[0_25px_60px_rgba(74,44,29,0.35)] select-none pointer-events-none rounded-[2rem]"
+                priority
+              />
+            </motion.div>
+
+            {/* Floating Feature Card 1 (Ingredients) */}
+            <div className="absolute top-1/4 -left-4 md:-left-12 z-20 animate-float-slow max-w-[210px]">
+              <div className="glass-card rounded-2xl p-3 shadow-md flex items-center gap-3 bg-white/70">
+                <div className="w-10 h-10 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-xl shadow-sm">
+                  🌾
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--accent)] leading-tight">Premium Ingredients</h4>
+                  <p className="text-[9px] text-gray-500 mt-0.5 leading-snug">Only the finest organic sources</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Feature Card 2 (Delivery) */}
+            <div className="absolute bottom-1/4 -right-4 md:-right-8 z-20 animate-float-fast max-w-[210px]">
+              <div className="glass-card rounded-2xl p-3 shadow-md flex items-center gap-3 bg-white/70">
+                <div className="w-10 h-10 rounded-xl bg-[var(--secondary)] flex items-center justify-center text-xl shadow-sm">
+                  🚀
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--accent)] leading-tight">Fast Delivery</h4>
+                  <p className="text-[9px] text-gray-500 mt-0.5 leading-snug">Freshly delivered to your door</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -381,8 +576,8 @@ export default function HomePage() {
       <section className="py-24 bg-neutral-50 border-y border-neutral-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl font-serif tracking-tight text-black mb-4">Why Discerning Buyers Choose Us</h2>
-            <p className="text-neutral-500 font-light">We redefine real estate acquisitions by merging elite design, comprehensive transparency, and smooth logistics.</p>
+            <h2 className="text-3xl font-serif tracking-tight text-black mb-4">Why Discerning Customers Choose Gem Crispy</h2>
+            <p className="text-neutral-500 font-light">We deliver premium baked goods with meticulous quality, authentic flavors, and exceptional service every single time.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -408,22 +603,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* HOUSING & APARTMENTS SECTION */}
+      {/* BAKERY PRODUCTS SECTION */}
       <section id="properties" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-neutral-400 font-extrabold" id="apartments">Signature Portfolio</span>
-              <h2 className="text-4xl font-serif tracking-tight text-black mt-2">Available Properties</h2>
+              <span className="text-xs uppercase tracking-widest text-neutral-400 font-extrabold" id="apartments">Freshly Made</span>
+              <h2 className="text-4xl font-serif tracking-tight text-black mt-2">Our Specialty Items</h2>
             </div>
             
             {/* Search Form */}
             <form onSubmit={handlePropertySearch} className="flex items-center border border-neutral-200 rounded-full px-4 py-2 w-full md:max-w-md bg-white">
               <input 
                 type="text" 
-                placeholder="Search location, title..." 
+                placeholder="Search by flavor or name..." 
                 value={propertySearch}
                 onChange={(e) => setPropertySearch(e.target.value)}
                 className="w-full bg-transparent border-none outline-none text-sm text-black placeholder-neutral-400 px-2"
@@ -526,10 +721,10 @@ export default function HomePage() {
                       {/* Specs */}
                       <div className="flex items-center space-x-4 border-t border-neutral-100 pt-4 text-xs font-medium text-neutral-600">
                         {property.bedrooms > 0 && (
-                          <span>{property.bedrooms} Bed{property.bedrooms > 1 && 's'}</span>
+                          <span>{property.bedrooms} Portion{property.bedrooms > 1 && 's'}</span>
                         )}
                         {property.bathrooms > 0 && (
-                          <span>{property.bathrooms} Bath{property.bathrooms > 1 && 's'}</span>
+                          <span>{property.bathrooms} Serve{property.bathrooms > 1 && 's'}</span>
                         )}
                         <span className="text-black font-semibold ml-auto text-sm">${property.price.toLocaleString()}</span>
                       </div>
@@ -540,19 +735,19 @@ export default function HomePage() {
                           onClick={() => triggerWhatsApp('inspection', property)}
                           className="bg-neutral-50 hover:bg-neutral-100 text-neutral-800 text-[10px] font-bold py-2 px-1 rounded-lg border border-neutral-200 transition-colors text-center uppercase"
                         >
-                          Book View
+                          Get Details
                         </button>
                         <button
                           onClick={() => triggerWhatsApp('buy', property)}
                           className="bg-black hover:bg-neutral-900 text-white text-[10px] font-bold py-2 px-1 rounded-lg transition-colors text-center uppercase"
                         >
-                          Buy Now
+                          Order Now
                         </button>
                         <button
                           onClick={() => triggerWhatsApp('agent', property)}
                           className="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] text-[10px] font-bold py-2 px-1 rounded-lg border border-[#25D366]/20 transition-colors text-center uppercase"
                         >
-                          Agent
+                          WhatsApp
                         </button>
                       </div>
                     </div>
@@ -563,7 +758,7 @@ export default function HomePage() {
 
             {properties.length === 0 && (
               <div className="col-span-full py-16 text-center text-neutral-400 font-light">
-                No properties matched your filters. Try checking other categories.
+                No products matched your filters. Try checking other categories.
               </div>
             )}
           </div>
@@ -571,15 +766,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* E-SHOP SECTION */}
+      {/* SNACKS & BULK ORDERS SECTION */}
       <section id="shop" className="py-24 bg-neutral-950 text-white border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
             <div>
-              <span className="text-xs uppercase tracking-widest text-neutral-500 font-extrabold">Interior & Accessories</span>
-              <h2 className="text-4xl font-serif tracking-tight text-white mt-2">Home Haven eShop</h2>
+              <span className="text-xs uppercase tracking-widest text-neutral-500 font-extrabold">Bulk & Wholesale</span>
+              <h2 className="text-4xl font-serif tracking-tight text-white mt-2">Gem Crispy Snacks Collection</h2>
             </div>
 
             {/* Search */}
@@ -661,7 +856,7 @@ export default function HomePage() {
                         className="bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-500 px-5 py-2.5 rounded-full text-xs font-bold transition-all uppercase flex items-center space-x-2"
                       >
                         <ShoppingCart size={14} />
-                        <span>Order via WA</span>
+                        <span>Add to Cart</span>
                       </button>
                     </div>
                   </div>
@@ -741,8 +936,8 @@ export default function HomePage() {
             {/* Testimonials Video-Style Showcases */}
             <div className="space-y-8">
               <div>
-                <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Case Studies</span>
-                <h2 className="text-4xl font-serif text-black mt-2">Success & Growth</h2>
+                <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Featured Treats</span>
+                <h2 className="text-4xl font-serif text-black mt-2">Our Bakery Collection</h2>
               </div>
 
               <div className="space-y-6">
@@ -781,8 +976,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Experts on Demand</span>
-            <h2 className="text-3xl font-serif text-black mt-2">Meet Our Elite Agents</h2>
-            <p className="text-neutral-500 font-light text-sm mt-3">An elite group of real estate advisors and interior designers here to secure your investment.</p>
+            <h2 className="text-3xl font-serif text-black mt-2">Meet Our Elite Pastry Chefs</h2>
+            <p className="text-neutral-500 font-light text-sm mt-3">Our team of master bakers crafts each treat with passion and precision.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -814,10 +1009,10 @@ export default function HomePage() {
             
             {/* Story */}
             <div className="space-y-6">
-              <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Our Legacy</span>
-              <h2 className="text-4xl font-serif text-black leading-tight">Delivering High-End Properties for over a Decade</h2>
+              <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Our Story</span>
+              <h2 className="text-4xl font-serif text-black leading-tight">Crafting Sweet Memories for Over a Decade</h2>
               <p className="text-neutral-500 font-light leading-relaxed">
-                Founded with a vision to revolutionize the boutique real-estate market, Home Haven bridges architectural aesthetics with trusted transactions. We believe a home is a legacy, not just a property.
+                Founded with a passion for exquisite pastries and cakes, Gem Crispy Confectionery blends artisanal baking with a dedication to customer delight. We believe every dessert tells a story.
               </p>
               
               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-neutral-150">
@@ -827,11 +1022,11 @@ export default function HomePage() {
                 </div>
                 <div>
                   <h5 className="text-3xl font-bold font-serif text-black">450+</h5>
-                  <p className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mt-1">Properties Sold</p>
+                  <p className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mt-1">Events Catered</p>
                 </div>
                 <div>
                   <h5 className="text-3xl font-bold font-serif text-black">99%</h5>
-                  <p className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mt-1">Satisfied Buyers</p>
+                  <p className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider mt-1">Happy Clients</p>
                 </div>
               </div>
             </div>
@@ -846,25 +1041,285 @@ export default function HomePage() {
                     <span className="w-1.5 h-1.5 bg-white rounded-full" />
                     <span>Uncompromising Quality</span>
                   </h5>
-                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">Every villa and penthouse cataloged passes exhaustive design and quality inspections.</p>
+                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">Every cake and pastry cataloged passes exhaustive design and quality inspections.</p>
                 </div>
                 <div>
                   <h5 className="text-sm font-semibold text-white flex items-center space-x-2">
                     <span className="w-1.5 h-1.5 bg-white rounded-full" />
                     <span>Strict Discretion</span>
                   </h5>
-                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">We represent elite VIP buyers and respect security and NDA transactions.</p>
+                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">We respect privacy for private events and high-end celebrations.</p>
                 </div>
                 <div>
                   <h5 className="text-sm font-semibold text-white flex items-center space-x-2">
                     <span className="w-1.5 h-1.5 bg-white rounded-full" />
                     <span>Holistic E-Commerce Support</span>
                   </h5>
-                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">We supply designer furniture and high-quality appliances directly to furnish your new haven.</p>
+                  <p className="text-neutral-400 text-xs font-light pl-3.5 mt-1">We supply designer accessories and gift sets directly for your celebrations.</p>
                 </div>
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTION PROCESS SECTION */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Craftsmanship</span>
+            <h2 className="text-4xl font-serif text-black mt-2">Our Production Process</h2>
+            <p className="text-neutral-500 font-light text-sm mt-3">From premium ingredients to your table—every step is meticulously executed.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { step: 1, title: 'Ingredient Selection', desc: 'Premium ingredients sourced from trusted suppliers worldwide', icon: '🌾' },
+              { step: 2, title: 'Preparation', desc: 'Expert preparation and mixing of batters with precision', icon: '🥣' },
+              { step: 3, title: 'Baking', desc: 'Perfect temperature control for flawless baked goods', icon: '🔥' },
+              { step: 4, title: 'Decoration', desc: 'Artistic finishing touches by our master decorators', icon: '✨' },
+              { step: 5, title: 'Quality Inspection', desc: 'Rigorous quality checks ensure perfection every time', icon: '✅' },
+              { step: 6, title: 'Packaging', desc: 'Beautiful, secure packaging maintains freshness', icon: '📦' },
+              { step: 7, title: 'Delivery', desc: 'Fast, careful delivery to your doorstep', icon: '🚚' }
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                className="relative"
+              >
+                <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 text-center space-y-3 h-full flex flex-col items-center justify-center hover:shadow-lg transition-all">
+                  <div className="text-4xl">{item.icon}</div>
+                  <div className="absolute -top-4 -right-4 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center font-bold text-xs">
+                    {item.step}
+                  </div>
+                  <h3 className="font-bold text-black">{item.title}</h3>
+                  <p className="text-neutral-600 text-xs font-light">{item.desc}</p>
+                </div>
+                {item.step < 7 && (
+                  <div className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 text-neutral-300">
+                    <ArrowRight size={20} />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY SECTION */}
+      <section className="py-24 bg-neutral-50 border-y border-neutral-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Visual Showcase</span>
+            <h2 className="text-4xl font-serif text-black mt-2">Our Gallery</h2>
+            <p className="text-neutral-500 font-light text-sm mt-3">Explore our exquisite creations and satisfied customers.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: 'Wedding Cakes', image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=500&q=80' },
+              { title: 'Artisanal Pastries', image: 'https://images.unsplash.com/photo-1585518419759-5a14ed9ead0f?auto=format&fit=crop&w=500&q=80' },
+              { title: 'Fresh Bread', image: 'https://images.unsplash.com/photo-1549365776-b866e0ed968f?auto=format&fit=crop&w=500&q=80' },
+              { title: 'Cupcake Collections', image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=500&q=80' },
+              { title: 'Event Catering', image: 'https://images.unsplash.com/photo-1464430521811-c03f2311d2ba?auto=format&fit=crop&w=500&q=80' },
+              { title: 'Production', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=500&q=80' }
+            ].map((gallery, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ scale: 1.05 }}
+                className="relative group overflow-hidden rounded-2xl aspect-square cursor-pointer"
+              >
+                <Image
+                  src={gallery.image}
+                  alt={gallery.title}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                  <h3 className="text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {gallery.title}
+                  </h3>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CUSTOM ORDERS SECTION */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            {/* Information */}
+            <div className="space-y-8">
+              <div>
+                <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Personalized Creations</span>
+                <h2 className="text-4xl font-serif text-black mt-2">Custom Orders</h2>
+                <p className="text-neutral-500 font-light text-sm mt-3">Create your dream confectionery experience with our bespoke ordering service.</p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white flex-shrink-0 mt-0.5">
+                    <Check size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-black mb-1">Request Custom Design</h4>
+                    <p className="text-neutral-600 text-sm font-light">Describe your vision and we'll bring it to life</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white flex-shrink-0 mt-0.5">
+                    <Check size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-black mb-1">Upload Inspiration</h4>
+                    <p className="text-neutral-600 text-sm font-light">Share reference images or design ideas</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white flex-shrink-0 mt-0.5">
+                    <Check size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-black mb-1">Choose Event Type</h4>
+                    <p className="text-neutral-600 text-sm font-light">Wedding, birthday, corporate, or special occasion</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center text-white flex-shrink-0 mt-0.5">
+                    <Check size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-black mb-1">Select Delivery Date</h4>
+                    <p className="text-neutral-600 text-sm font-light">We accommodate most timelines with advance notice</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Form */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-3xl p-8">
+              <h4 className="text-lg font-bold font-serif mb-6 text-black border-b border-neutral-200 pb-4">Request Custom Order</h4>
+              
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Event Type</label>
+                  <select className="w-full bg-white border border-neutral-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black">
+                    <option>Birthday Cake</option>
+                    <option>Wedding Cake</option>
+                    <option>Corporate Event</option>
+                    <option>Anniversary</option>
+                    <option>Custom Design</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Delivery Date</label>
+                  <input 
+                    type="date" 
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Budget (Optional)</label>
+                  <input 
+                    type="number" 
+                    placeholder="e.g. 50000" 
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Special Instructions</label>
+                  <textarea 
+                    rows={4}
+                    placeholder="Describe your custom order requirements, dietary preferences, flavor choices, design ideas..."
+                    className="w-full bg-white border border-neutral-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-neutral-400 tracking-wider mb-2">Inspiration Images (Upload)</label>
+                  <div className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center hover:border-black transition-colors cursor-pointer">
+                    <Upload size={24} className="mx-auto text-neutral-400 mb-2" />
+                    <p className="text-xs text-neutral-500 font-light">Click to upload reference images</p>
+                  </div>
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="w-full bg-black hover:bg-neutral-800 text-white font-medium py-3.5 rounded-xl transition-colors uppercase text-xs tracking-wider mt-6"
+                >
+                  Submit Custom Order Request
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* WHAT WE OFFER SECTION */}
+      <section className="py-24 bg-white border-y border-neutral-100">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Our Expertise</span>
+            <h2 className="text-4xl font-serif text-black mt-2">What Our Team Offers</h2>
+            <p className="text-neutral-500 font-light text-sm mt-3">Comprehensive baking and confectionery solutions for every need.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Premium Cakes & Pastries',
+                desc: 'Custom-designed cakes for birthdays, weddings, anniversaries, and special occasions. All freshly baked with premium ingredients.',
+                items: ['Birthday Cakes', 'Wedding Cakes', 'Anniversary Cakes', 'Themed Designs', 'Fondant & Buttercream']
+              },
+              {
+                title: 'Snacks & Small Chops',
+                desc: 'Delicious finger foods perfect for parties, corporate events, and gatherings. Ready to serve or bulk orders available.',
+                items: ['Meat Pies', 'Chin Chin', 'Samosas', 'Spring Rolls', 'Puff Puff']
+              },
+              {
+                title: 'Breads & Baked Goods',
+                desc: 'Artisanal breads baked fresh daily. From traditional sourdough to specialty grain combinations.',
+                items: ['Sourdough', 'Sandwich Bread', 'Whole Wheat', 'Rye Bread', 'Special Orders']
+              },
+              {
+                title: 'Event Catering',
+                desc: 'Full catering services for weddings, corporate functions, and private events. Customized menu planning available.',
+                items: ['Menu Planning', 'Large Orders', 'Delivery & Setup', 'Professional Service', 'Flexible Pricing']
+              },
+              {
+                title: 'Cookies & Confections',
+                desc: 'Handmade cookies, chocolates, and premium confectionery items. Perfect for gifts or personal indulgence.',
+                items: ['Chocolate Truffles', 'Macarons', 'Sugar Cookies', 'Gift Boxes', 'Bulk Orders']
+              },
+              {
+                title: 'Bulk & Wholesale',
+                desc: 'Wholesale pricing for businesses, restaurants, and retailers. Consistent quality and timely delivery guaranteed.',
+                items: ['Restaurant Supply', 'Wholesale Pricing', 'Bulk Discounts', 'Contract Orders', 'Recurring Delivery']
+              }
+            ].map((offer, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ y: -8 }}
+                className="bg-neutral-50 border border-neutral-200 rounded-2xl p-8 space-y-4 hover:shadow-lg transition-all"
+              >
+                <h3 className="text-lg font-bold text-black">{offer.title}</h3>
+                <p className="text-neutral-600 text-sm font-light leading-relaxed">{offer.desc}</p>
+                <div className="pt-4 border-t border-neutral-200 space-y-2">
+                  {offer.items.map((item, i) => (
+                    <div key={i} className="flex items-center space-x-2">
+                      <Check size={14} className="text-black flex-shrink-0" />
+                      <span className="text-xs text-neutral-700 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -878,9 +1333,9 @@ export default function HomePage() {
             {/* Information */}
             <div className="space-y-8">
               <div>
-                <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Personal Concierge</span>
-                <h2 className="text-4xl font-serif text-black mt-2">Get in Touch</h2>
-                <p className="text-neutral-500 font-light text-sm mt-3">Book private viewings or request catalog specs for properties and products.</p>
+                <span className="text-xs uppercase tracking-widest text-neutral-400 font-bold">Sweet Concierge</span>
+                <h2 className="text-4xl font-serif text-black mt-2">Contact Us</h2>
+                <p className="text-neutral-500 font-light text-sm mt-3">Reach out for custom cake orders, catering, or any sweet inquiries.</p>
               </div>
 
               <div className="space-y-6">
@@ -899,7 +1354,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h5 className="text-xs text-neutral-400 uppercase font-semibold">Email Concierge</h5>
-                    <p className="text-sm text-black font-semibold">concierge@homehaven.com</p>
+                    <p className="text-sm text-black font-semibold">concierge@gemcrispy.com</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -916,7 +1371,7 @@ export default function HomePage() {
               {/* Map Mockup */}
               <div className="h-60 rounded-3xl overflow-hidden border border-neutral-200 relative bg-neutral-200 shadow-inner">
                 <div className="absolute inset-0 bg-neutral-900/10 flex items-center justify-center font-serif text-neutral-600 font-bold">
-                  [Interactive Business Location Map]
+                  [Interactive Location Map]
                 </div>
               </div>
             </div>
@@ -929,7 +1384,7 @@ export default function HomePage() {
                 <div className="bg-neutral-50 text-black border border-neutral-250 p-6 rounded-2xl text-center space-y-2">
                   <CheckCircle className="mx-auto text-black" size={32} />
                   <h5 className="font-bold">Enquiry Logged</h5>
-                  <p className="text-xs text-neutral-500">Our senior property representative will reach out to you via call/email shortly.</p>
+                  <p className="text-xs text-neutral-500">Our senior representative will reach out to you via call/email shortly.</p>
                 </div>
               ) : (
                 <form onSubmit={handleEnquirySubmit} className="space-y-4">
@@ -971,7 +1426,7 @@ export default function HomePage() {
                       rows={4}
                       value={enquiryForm.message}
                       onChange={(e) => setEnquiryForm({...enquiryForm, message: e.target.value})}
-                      placeholder="Specify requirements, budget or product models..."
+                      placeholder="Specify requirements, budget or event dates..."
                       className="w-full bg-neutral-50 text-black border border-neutral-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black"
                     />
                   </div>
@@ -998,12 +1453,12 @@ export default function HomePage() {
           <div className="space-y-4">
             <a href="#home" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-sm">H</span>
+                <span className="text-black font-bold text-sm">G</span>
               </div>
-              <span className="text-white font-extrabold tracking-widest text-lg uppercase font-serif">Home Haven</span>
+              <span className="text-white font-extrabold tracking-widest text-lg uppercase font-serif">Gem Crispy Confectionery</span>
             </a>
             <p className="text-neutral-500 font-light text-xs leading-relaxed">
-              Premium agency representing luxury property acquisitions, designer fittings, and concierge viewing logistics.
+              Premium agency representing luxury sweets, designer fittings, and concierge tasting logistics.
             </p>
           </div>
 
@@ -1011,9 +1466,9 @@ export default function HomePage() {
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">Quick Navigation</h4>
             <div className="flex flex-col space-y-2 text-xs">
               <a href="#home" className="hover:text-white transition-colors">Home</a>
-              <a href="#properties" className="hover:text-white transition-colors">Properties Portfolio</a>
-              <a href="#shop" className="hover:text-white transition-colors">Furniture & Decor Shop</a>
-              <a href="#reviews" className="hover:text-white transition-colors">Client Reviews</a>
+              <a href="#properties" className="hover:text-white transition-colors">Products</a>
+              <a href="#shop" className="hover:text-white transition-colors">Bakery Shop</a>
+              <a href="#reviews" className="hover:text-white transition-colors">Customer Testimonials</a>
             </div>
           </div>
 
@@ -1046,7 +1501,7 @@ export default function HomePage() {
         </div>
         
         <div className="max-w-7xl mx-auto px-6 lg:px-8 border-t border-neutral-900 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600">
-          <p>© {new Date().getFullYear()} Home Haven Agency. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Gem Crispy Confectionery. All Rights Reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="/admin" className="hover:text-white transition-colors">Admin Dashboard Login</a>
           </div>
@@ -1055,7 +1510,7 @@ export default function HomePage() {
 
       {/* Floating WhatsApp Action Button */}
       <button 
-        onClick={() => window.open('https://wa.me/2348000000000?text=Hello%20Home%20Haven', '_blank')}
+        onClick={() => window.open('https://wa.me/2348000000000?text=Hello%20Gem%20Crispy%20Confectionery!%20I%20would%20like%20to%20place%20an%20order', '_blank')}
         className="fixed bottom-6 right-6 z-50 bg-[#25D366] hover:bg-[#20ba5a] text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center"
       >
         <MessageCircle size={28} />

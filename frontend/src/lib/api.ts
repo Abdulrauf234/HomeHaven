@@ -41,74 +41,71 @@ const FALLBACK_PROPERTIES: Property[] = [
   {
     id: "prop1",
     images: [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80"
     ],
-    title: "The Obsidian Luxury Villa",
-    type: "Villa",
-    location: "Beverly Hills, CA",
-    price: 4850000,
-    bedrooms: 5,
-    bathrooms: 6,
-    description: "A gorgeous architectural masterpiece featuring a modern luxury black and white design palette. Features floor-to-ceiling glass walls, an infinity pool, smart automation, and professional chef kitchen.",
+    title: "Classic Wedding Cake",
+    type: "Cakes",
+    location: "Main Bakery",
+    price: 250,
+    bedrooms: 3,
+    bathrooms: 50,
+    description: "Elegant three-tier wedding cake with smooth buttercream finish and delicate sugar flowers.",
     availability: "Available"
   },
   {
     id: "prop2",
     images: [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=800&q=80"
     ],
-    title: "Noir Crest Penthouse",
-    type: "Apartment",
-    location: "Manhattan, NY",
-    price: 2950000,
-    bedrooms: 3,
-    bathrooms: 3.5,
-    description: "A luxury high-rise penthouse showcasing stunning skyline views. Adorned with dark marble, brass accents, private elevator access, and a wrap-around terrace.",
+    title: "Assorted French Pastries",
+    type: "Pastries",
+    location: "Main Bakery",
+    price: 45,
+    bedrooms: 12,
+    bathrooms: 12,
+    description: "A delightful box of 12 assorted French pastries including eclairs, fruit tarts, and mille-feuille.",
     availability: "Available"
   },
   {
     id: "prop3",
     images: [
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
     ],
-    title: "Vanguard Minimalist Duplex",
-    type: "Duplex",
-    location: "Miami, FL",
-    price: 1850000,
-    bedrooms: 4,
-    bathrooms: 4,
-    description: "Modern duplex design with a soaring double-height living room. Features concrete rendering, luxury Italian fittings, and a rooftop lounge.",
+    title: "Artisan Sourdough Loaf",
+    type: "Breads",
+    location: "Main Bakery",
+    price: 8,
+    bedrooms: 1,
+    bathrooms: 8,
+    description: "Freshly baked artisan sourdough bread with a perfectly crisp crust and chewy interior.",
     availability: "Available"
   },
   {
     id: "prop4",
     images: [
-      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80"
     ],
-    title: "Serene Oasis Bungalow",
-    type: "Bungalow",
-    location: "Malibu, CA",
-    price: 3200000,
-    bedrooms: 4,
-    bathrooms: 3,
-    description: "A beautifully renovated mid-century modern bungalow. Steps away from the ocean, featuring high wooden beamed ceilings, skylights, and indoor-outdoor living flow.",
-    availability: "Sold"
+    title: "Glazed Gourmet Doughnuts",
+    type: "Doughnuts",
+    location: "Main Bakery",
+    price: 24,
+    bedrooms: 6,
+    bathrooms: 6,
+    description: "Box of 6 gourmet doughnuts with assorted glazes and toppings.",
+    availability: "Available"
   },
   {
     id: "prop5",
     images: [
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1563805042-7684c8e9e5cb?auto=format&fit=crop&w=800&q=80"
     ],
-    title: "Apex Executive Headquarters",
-    type: "Commercial Properties",
-    location: "Silicon Valley, CA",
-    price: 12500000,
-    bedrooms: 0,
+    title: "Signature Red Velvet Cake",
+    type: "Cakes",
+    location: "Main Bakery",
+    price: 65,
+    bedrooms: 1,
     bathrooms: 12,
-    description: "State of the art corporate building suitable for tech giants. Massive open plan layouts, fiber-optic backbone, premium conference halls, and private cafeteria.",
+    description: "Our signature moist red velvet cake with rich cream cheese frosting.",
     availability: "Available"
   }
 ];
@@ -116,61 +113,61 @@ const FALLBACK_PROPERTIES: Property[] = [
 const FALLBACK_PRODUCTS: Product[] = [
   {
     id: "prod1",
-    image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80",
-    name: "Bouclé Accent Lounge Chair",
-    price: 850,
-    description: "Luxury upholstered lounge chair in creamy white bouclé fabric, featuring solid oak frame legs. Designed for maximum comfort and premium aesthetic.",
-    category: "Furniture",
+    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80",
+    name: "Chocolate Chip Cookies",
+    price: 18,
+    description: "Dozen freshly baked, chewy chocolate chip cookies made with premium Belgian chocolate.",
+    category: "Cookies",
     availability: "In Stock",
-    stock: 12
+    stock: 50
   },
   {
     id: "prod2",
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=800&q=80",
-    name: "Matte Black Smart Espresso Machine",
-    price: 1450,
-    description: "Premium bean-to-cup espresso maker. Intelligent touch control, customizable profile settings, and sleek metal chassis to elevate any luxury kitchen.",
-    category: "Home Appliances",
+    image: "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=800&q=80",
+    name: "Luxury Chocolate Truffles",
+    price: 35,
+    description: "Box of 16 handcrafted chocolate truffles in assorted flavors.",
+    category: "Chocolates",
     availability: "In Stock",
-    stock: 5
+    stock: 30
   },
   {
     id: "prod3",
-    image: "https://images.unsplash.com/photo-1608248597481-496100c80836?auto=format&fit=crop&w=800&q=80",
-    name: "Ambient LED Sound Bar Suite",
-    price: 599,
-    description: "Immersive Dolby Atmos sound system with integrated customizable smart backlighting. Elegant minimal bar matches perfectly under premium TV mounts.",
-    category: "Electronics",
+    image: "https://images.unsplash.com/photo-1577222409054-944a9557b779?auto=format&fit=crop&w=800&q=80",
+    name: "Celebration Hamper",
+    price: 120,
+    description: "A beautiful gift hamper packed with our finest cookies, chocolates, and a bottle of sparkling cider.",
+    category: "Hampers",
     availability: "In Stock",
-    stock: 8
+    stock: 10
   },
   {
     id: "prod4",
-    image: "https://images.unsplash.com/photo-1580481072645-022f9a6dbf27?auto=format&fit=crop&w=800&q=80",
-    name: "Monolithic Ceramic Vase Set",
-    price: 180,
-    description: "Handcrafted textured stoneware vases in black, charcoal, and warm grey. Perfect centerpieces for minimalist consoles.",
-    category: "Home Decor",
+    image: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=800&q=80",
+    name: "Mini Vanilla Cupcakes",
+    price: 22,
+    description: "Pack of 12 mini vanilla cupcakes with swirl buttercream frosting.",
+    category: "Cupcakes",
+    availability: "In Stock",
+    stock: 40
+  },
+  {
+    id: "prod5",
+    image: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=80",
+    name: "Party Small Chops Box",
+    price: 45,
+    description: "Assorted savory finger foods perfect for small gatherings. Includes spring rolls, samosas, and puff-puff.",
+    category: "Small Chops",
     availability: "In Stock",
     stock: 25
   },
   {
-    id: "prod5",
-    image: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80",
-    name: "Damascus Professional Knife Set",
-    price: 320,
-    description: "6-piece chef knife bundle made with 67 layers of Japanese Damascus steel. Includes black walnut magnetic block.",
-    category: "Kitchen Equipment",
-    availability: "In Stock",
-    stock: 15
-  },
-  {
     id: "prod6",
-    image: "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80",
-    name: "Smart Biometric Security Door Lock",
-    price: 450,
-    description: "Top-tier deadbolt lock with fingerprint scanner, digital keypad, mobile application support, and mechanical keys. Finished in brushed dark obsidian.",
-    category: "Security Devices",
+    image: "https://images.unsplash.com/photo-1560180474-e8563fd75bab?auto=format&fit=crop&w=800&q=80",
+    name: "Macaron Gift Box",
+    price: 28,
+    description: "Colorful assortment of 12 French macarons in classic flavors.",
+    category: "Gift Sets",
     availability: "In Stock",
     stock: 20
   }
@@ -184,46 +181,98 @@ function getHeaders() {
   };
 }
 
+let memoryProperties: Property[] | null = null;
+let memoryProducts: Product[] | null = null;
+let memoryEnquiries: Enquiry[] | null = null;
+
 // Memory-based clientside store fallback for testing/demoing when server is unavailable
 class ClientsideStore {
   static getProperties() {
     if (typeof window === 'undefined') return FALLBACK_PROPERTIES;
-    const stored = localStorage.getItem('local_properties');
-    if (!stored) {
-      localStorage.setItem('local_properties', JSON.stringify(FALLBACK_PROPERTIES));
+    if (memoryProperties) return memoryProperties;
+    try {
+      const stored = localStorage.getItem('local_properties');
+      if (!stored) {
+        try {
+          localStorage.setItem('local_properties', JSON.stringify(FALLBACK_PROPERTIES));
+        } catch {}
+        memoryProperties = FALLBACK_PROPERTIES;
+        return FALLBACK_PROPERTIES;
+      }
+      memoryProperties = JSON.parse(stored);
+      return memoryProperties!;
+    } catch {
+      memoryProperties = FALLBACK_PROPERTIES;
       return FALLBACK_PROPERTIES;
     }
-    return JSON.parse(stored);
   }
 
   static saveProperties(props: Property[]) {
-    localStorage.setItem('local_properties', JSON.stringify(props));
+    memoryProperties = props;
+    try {
+      localStorage.setItem('local_properties', JSON.stringify(props));
+    } catch (e) {
+      console.warn("Storage quota exceeded or error saving properties to localStorage:", e);
+      if (typeof window !== 'undefined') {
+        alert("Warning: Local storage quota exceeded (likely due to large base64 image uploads). Changes are saved in-memory for this session but will be lost on page reload.");
+      }
+    }
   }
 
   static getProducts() {
     if (typeof window === 'undefined') return FALLBACK_PRODUCTS;
-    const stored = localStorage.getItem('local_products');
-    if (!stored) {
-      localStorage.setItem('local_products', JSON.stringify(FALLBACK_PRODUCTS));
+    if (memoryProducts) return memoryProducts;
+    try {
+      const stored = localStorage.getItem('local_products');
+      if (!stored) {
+        try {
+          localStorage.setItem('local_products', JSON.stringify(FALLBACK_PRODUCTS));
+        } catch {}
+        memoryProducts = FALLBACK_PRODUCTS;
+        return FALLBACK_PRODUCTS;
+      }
+      memoryProducts = JSON.parse(stored);
+      return memoryProducts!;
+    } catch {
+      memoryProducts = FALLBACK_PRODUCTS;
       return FALLBACK_PRODUCTS;
     }
-    return JSON.parse(stored);
   }
 
   static saveProducts(prods: Product[]) {
-    localStorage.setItem('local_products', JSON.stringify(prods));
+    memoryProducts = prods;
+    try {
+      localStorage.setItem('local_products', JSON.stringify(prods));
+    } catch (e) {
+      console.warn("Storage quota exceeded or error saving products to localStorage:", e);
+      if (typeof window !== 'undefined') {
+        alert("Warning: Local storage quota exceeded (likely due to large base64 image uploads). Changes are saved in-memory for this session but will be lost on page reload.");
+      }
+    }
   }
 
   static getEnquiries() {
     if (typeof window === 'undefined') return [];
-    const stored = localStorage.getItem('local_enquiries');
-    return stored ? JSON.parse(stored) : [];
+    if (memoryEnquiries) return memoryEnquiries;
+    try {
+      const stored = localStorage.getItem('local_enquiries');
+      memoryEnquiries = stored ? JSON.parse(stored) : [];
+      return memoryEnquiries!;
+    } catch {
+      memoryEnquiries = [];
+      return [];
+    }
   }
 
   static saveEnquiry(enq: Enquiry) {
     const list = this.getEnquiries();
     list.unshift(enq);
-    localStorage.setItem('local_enquiries', JSON.stringify(list));
+    memoryEnquiries = list;
+    try {
+      localStorage.setItem('local_enquiries', JSON.stringify(list));
+    } catch (e) {
+      console.warn("Storage quota exceeded or error saving enquiry to localStorage:", e);
+    }
   }
 }
 
@@ -459,9 +508,55 @@ export const api = {
       return data.url;
     } catch {
       return new Promise((resolve, reject) => {
+        if (typeof window === 'undefined') {
+          resolve('');
+          return;
+        }
         const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result as string);
+        reader.onload = (event) => {
+          const img = typeof window !== 'undefined' ? new window.Image() : null;
+          if (!img) {
+            resolve(event.target?.result as string || '');
+            return;
+          }
+          img.onload = () => {
+            try {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 600;
+              const MAX_HEIGHT = 600;
+              let width = img.width;
+              let height = img.height;
+
+              if (width > height) {
+                if (width > MAX_WIDTH) {
+                  height *= MAX_WIDTH / width;
+                  width = MAX_WIDTH;
+                }
+              } else {
+                if (height > MAX_HEIGHT) {
+                  width *= MAX_HEIGHT / height;
+                  height = MAX_HEIGHT;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                // Compress to JPEG with 0.6 quality
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                resolve(dataUrl);
+              } else {
+                resolve(event.target?.result as string || '');
+              }
+            } catch {
+              resolve(event.target?.result as string || '');
+            }
+          };
+          img.onerror = () => {
+            resolve(event.target?.result as string || '');
+          };
+          img.src = event.target?.result as string;
         };
         reader.onerror = reject;
         reader.readAsDataURL(file);

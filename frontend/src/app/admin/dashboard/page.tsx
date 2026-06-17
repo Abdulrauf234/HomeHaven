@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Building, ShoppingBag, Mail, TrendingUp, LogOut, Plus, Trash2, 
-  Edit, CheckCircle, XCircle, Home, Upload, Layers, PlusCircle, Check
+  Edit, CheckCircle, XCircle, Home, Upload, Layers, PlusCircle, Check, DollarSign
 } from 'lucide-react';
 import { api, Property, Product, Enquiry } from '@/lib/api';
 
@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   const [propertyForm, setPropertyForm] = useState({
     id: '', // Empty if creating
     title: '',
-    type: 'Apartment',
+    type: 'Cakes',
     location: '',
     price: '',
     bedrooms: '',
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
   const [productForm, setProductForm] = useState({
     id: '', // Empty if creating
     name: '',
-    category: 'Furniture',
+    category: 'Cookies',
     price: '',
     description: '',
     image: '',
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
     setProductForm({
       id: '',
       name: '',
-      category: 'Furniture',
+      category: 'Cookies',
       price: '',
       description: '',
       image: '',
@@ -284,8 +284,8 @@ export default function AdminDashboard() {
     .filter(p => p.availability === 'Sold')
     .reduce((sum, p) => sum + p.price, 0);
 
-  const categories = ['Apartment', 'Duplex', 'Bungalow', 'Villa', 'Commercial Properties'];
-  const shopCategories = ['Furniture', 'Home Appliances', 'Electronics', 'Home Decor', 'Kitchen Equipment', 'Security Devices'];
+  const categories = ['Cakes', 'Pastries', 'Breads', 'Doughnuts', 'Specialty Items'];
+  const shopCategories = ['Cookies', 'Chocolates', 'Gift Sets', 'Cupcakes', 'Small Chops', 'Hampers'];
 
   return (
     <div className="bg-neutral-50 min-h-screen flex text-black font-sans selection:bg-black selection:text-white">
@@ -296,9 +296,9 @@ export default function AdminDashboard() {
           {/* Logo */}
           <a href="/" className="flex items-center space-x-2 border-b border-neutral-800 pb-6">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-sm">H</span>
+              <span className="text-black font-bold text-sm">G</span>
             </div>
-            <span className="text-white font-extrabold tracking-widest text-sm uppercase font-serif">Home Haven</span>
+            <span className="text-white font-extrabold tracking-widest text-sm uppercase font-serif">Gem Crispy</span>
           </a>
 
           {/* Nav */}
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
               }`}
             >
               <Building size={16} />
-              <span>Properties</span>
+              <span>Bakery Products</span>
             </button>
 
             <button 
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
               }`}
             >
               <ShoppingBag size={16} />
-              <span>E-Shop Products</span>
+              <span>Snacks &amp; Bulk Orders</span>
             </button>
 
             <button 
@@ -342,6 +342,14 @@ export default function AdminDashboard() {
               <Mail size={16} />
               <span>Leads & Enquiries</span>
             </button>
+
+            <a 
+              href="/admin/dashboard/prices"
+              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-neutral-400 hover:text-white hover:bg-neutral-900`}
+            >
+              <DollarSign size={16} />
+              <span>Manage Prices</span>
+            </a>
           </nav>
         </div>
 
@@ -367,11 +375,11 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-2xl font-bold font-serif text-black uppercase tracking-wide">
               {activeTab === 'analytics' && 'Dashboard Overview'}
-              {activeTab === 'properties' && 'Properties Portfolio'}
-              {activeTab === 'shop' && 'eShop Inventory'}
-              {activeTab === 'leads' && 'Customer Enquiries Log'}
+              {activeTab === 'properties' && 'Bakery Products'}
+              {activeTab === 'shop' && 'Snacks & Bulk Orders'}
+              {activeTab === 'leads' && 'Customer Orders & Inquiries'}
             </h1>
-            <p className="text-xs text-neutral-400">Manage real estate listings and customer sales pipelines</p>
+            <p className="text-xs text-neutral-400">Manage Gem Crispy Confectionery products and customer orders</p>
           </div>
 
           <div className="flex items-center space-x-3">
@@ -390,9 +398,9 @@ export default function AdminDashboard() {
         {/* Tab switcher for mobile screens */}
         <div className="flex md:hidden items-center overflow-x-auto border-b border-neutral-200 pb-3 mb-6 gap-2 text-[10px] font-bold uppercase tracking-wider">
           <button onClick={() => setActiveTab('analytics')} className={`px-4 py-2 rounded-lg ${activeTab === 'analytics' ? 'bg-black text-white':'bg-white border'}`}>Overview</button>
-          <button onClick={() => setActiveTab('properties')} className={`px-4 py-2 rounded-lg ${activeTab === 'properties' ? 'bg-black text-white':'bg-white border'}`}>Props</button>
-          <button onClick={() => setActiveTab('shop')} className={`px-4 py-2 rounded-lg ${activeTab === 'shop' ? 'bg-black text-white':'bg-white border'}`}>Shop</button>
-          <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-lg ${activeTab === 'leads' ? 'bg-black text-white':'bg-white border'}`}>Leads</button>
+          <button onClick={() => setActiveTab('properties')} className={`px-4 py-2 rounded-lg ${activeTab === 'properties' ? 'bg-black text-white':'bg-white border'}`}>Bakery</button>
+          <button onClick={() => setActiveTab('shop')} className={`px-4 py-2 rounded-lg ${activeTab === 'shop' ? 'bg-black text-white':'bg-white border'}`}>Snacks</button>
+          <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-lg ${activeTab === 'leads' ? 'bg-black text-white':'bg-white border'}`}>Orders</button>
         </div>
 
         {/* TAB 1: ANALYTICS */}
@@ -410,10 +418,10 @@ export default function AdminDashboard() {
               </div>
 
               <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
-                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Sold Listings</span>
+                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Out of Stock</span>
                 <div className="flex items-baseline space-x-2 mt-4">
                   <span className="text-3xl font-serif font-bold text-black">{soldProperties}</span>
-                  <span className="text-xs text-neutral-400">({Math.round((soldProperties / (totalProperties || 1)) * 100)}% conversion)</span>
+                  <span className="text-xs text-neutral-400">({Math.round((soldProperties / (totalProperties || 1)) * 100)}% unavailable)</span>
                 </div>
               </div>
 
@@ -444,7 +452,7 @@ export default function AdminDashboard() {
                   <h3 className="text-4xl font-serif font-bold text-white">${estimatedRevenue.toLocaleString()}</h3>
                 </div>
                 <div className="text-xs text-neutral-400 border-t border-neutral-850 pt-4 mt-6 leading-relaxed">
-                  Sum total calculated based on property listings updated as **Sold** in the database. Product purchases are tracked separately via private WhatsApp endpoints.
+                  Sum total calculated based on product orders. Orders are tracked separately via WhatsApp and contact forms.
                 </div>
               </div>
 
@@ -522,13 +530,13 @@ export default function AdminDashboard() {
         {activeTab === 'properties' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-2">
-              <span className="text-xs text-neutral-400 font-bold uppercase tracking-wider">{properties.length} Listings</span>
+              <span className="text-xs text-neutral-400 font-bold uppercase tracking-wider">{properties.length} Products</span>
               <button 
                 onClick={() => { resetPropertyForm(); setIsPropertyModalOpen(true); }}
                 className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase transition-colors flex items-center space-x-2"
               >
                 <Plus size={16} />
-                <span>Post Property</span>
+                <span>Add New Product</span>
               </button>
             </div>
 
@@ -538,8 +546,8 @@ export default function AdminDashboard() {
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
                     <tr className="border-b border-neutral-100 text-neutral-400 font-bold uppercase tracking-wider pb-3">
-                      <th className="py-3">Property</th>
-                      <th>Location</th>
+                      <th className="py-3">Product</th>
+                      <th>Origin</th>
                       <th>Price</th>
                       <th>Rooms</th>
                       <th>Category</th>
@@ -572,9 +580,9 @@ export default function AdminDashboard() {
                             }`}
                           >
                             {prop.availability === 'Available' ? (
-                              <><CheckCircle size={12} /> <span>Available</span></>
+                              <><CheckCircle size={12} /> <span>In Stock</span></>
                             ) : (
-                              <><XCircle size={12} /> <span>Sold</span></>
+                              <><XCircle size={12} /> <span>Out of Stock</span></>
                             )}
                           </button>
                         </td>
@@ -597,7 +605,7 @@ export default function AdminDashboard() {
                     {properties.length === 0 && (
                       <tr>
                         <td colSpan={7} className="py-8 text-center text-neutral-400 font-light">
-                          No properties available in DB. Click "Post Property" to add.
+                          No products available in DB. Click "Add New Product" to add.
                         </td>
                       </tr>
                     )}
@@ -609,7 +617,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 3: E-SHOP */}
+        {/* TAB 3: SNACKS & BULK ORDERS */}
         {activeTab === 'shop' && (
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-2">
@@ -753,7 +761,7 @@ export default function AdminDashboard() {
             
             <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
               <h3 className="text-lg font-bold font-serif text-black uppercase tracking-wide">
-                {isEditingProperty ? 'Edit Property Listing' : 'Post New Property'}
+                {isEditingProperty ? 'Edit Product Details' : 'Add New Bakery Product'}
               </h3>
               <button 
                 onClick={() => setIsPropertyModalOpen(false)}
@@ -766,18 +774,18 @@ export default function AdminDashboard() {
             <form onSubmit={handlePropertySubmit} className="space-y-4 text-xs font-semibold">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Property Title</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Name</label>
                   <input 
                     type="text" 
                     required
                     value={propertyForm.title}
                     onChange={(e) => setPropertyForm({...propertyForm, title: e.target.value})}
-                    placeholder="e.g. Noir Crest Penthouse"
+                    placeholder="e.g. Chocolate Wedding Cake"
                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Category Type</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Type</label>
                   <select 
                     value={propertyForm.type}
                     onChange={(e) => setPropertyForm({...propertyForm, type: e.target.value})}
@@ -792,24 +800,24 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Location</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Location/Origin</label>
                   <input 
                     type="text" 
                     required
                     value={propertyForm.location}
                     onChange={(e) => setPropertyForm({...propertyForm, location: e.target.value})}
-                    placeholder="e.g. Manhattan, NY"
+                    placeholder="e.g. Lagos, Nigeria"
                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Price (USD)</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Price (₦ NGN)</label>
                   <input 
                     type="number" 
                     required
                     value={propertyForm.price}
                     onChange={(e) => setPropertyForm({...propertyForm, price: e.target.value})}
-                    placeholder="e.g. 1500000"
+                    placeholder="e.g. 15000"
                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
                   />
                 </div>
@@ -817,22 +825,22 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Bedrooms</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Portions/Servings</label>
                   <input 
                     type="number" 
                     value={propertyForm.bedrooms}
                     onChange={(e) => setPropertyForm({...propertyForm, bedrooms: e.target.value})}
-                    placeholder="e.g. 4"
+                    placeholder="e.g. 20"
                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
                   />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Bathrooms</label>
+                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Stock Quantity</label>
                   <input 
                     type="number" 
                     value={propertyForm.bathrooms}
                     onChange={(e) => setPropertyForm({...propertyForm, bathrooms: e.target.value})}
-                    placeholder="e.g. 3.5"
+                    placeholder="e.g. 5"
                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
                   />
                 </div>
@@ -889,7 +897,7 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Listing Status</label>
+                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Availability</label>
                 <div className="flex space-x-4">
                   <label className="flex items-center space-x-2">
                     <input 
@@ -899,7 +907,7 @@ export default function AdminDashboard() {
                       checked={propertyForm.availability === 'Available'}
                       onChange={() => setPropertyForm({...propertyForm, availability: 'Available'})}
                     />
-                    <span>Available</span>
+                    <span>In Stock</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <input 
@@ -909,7 +917,7 @@ export default function AdminDashboard() {
                       checked={propertyForm.availability === 'Sold'}
                       onChange={() => setPropertyForm({...propertyForm, availability: 'Sold'})}
                     />
-                    <span>Mark as Sold</span>
+                    <span>Out of Stock</span>
                   </label>
                 </div>
               </div>
@@ -942,7 +950,7 @@ export default function AdminDashboard() {
             
             <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
               <h3 className="text-lg font-bold font-serif text-black uppercase tracking-wide">
-                {isEditingProduct ? 'Edit Shop Product' : 'Add New E-Shop Product'}
+                {isEditingProduct ? 'Edit Snack / Bulk Product' : 'Add New Snack / Bulk Product'}
               </h3>
               <button 
                 onClick={() => setIsProductModalOpen(false)}
