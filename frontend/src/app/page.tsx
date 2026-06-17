@@ -533,7 +533,7 @@ export default function HomePage() {
               className="relative w-[80%] max-w-[380px] aspect-square z-10 flex items-center justify-center"
             >
               <Image 
-                src="/images/ice_cream_cup.png" 
+                src="https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=600&q=80" 
                 alt="Luxury Ice Cream Cup" 
                 width={400}
                 height={400}
