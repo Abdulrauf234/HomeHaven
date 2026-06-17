@@ -387,9 +387,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
           
           {/* Left Side: Editorial copywriting & features */}
-          <div className="space-y-8">
+          <div className="space-y-8 text-center lg:text-left">
             <div className="space-y-4">
-              <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-[rgba(212,160,23,0.3)] bg-[rgba(247,233,215,0.4)] text-[var(--primary)] font-bold text-[10px] tracking-widest uppercase">
+              <div className="inline-flex items-center justify-center lg:justify-start space-x-2 px-3 py-1.5 rounded-full border border-[rgba(212,160,23,0.3)] bg-[rgba(247,233,215,0.4)] text-[var(--primary)] font-bold text-[10px] tracking-widest uppercase">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
                 <span>PREMIUM CONFECTIONERY</span>
               </div>
@@ -403,7 +403,7 @@ export default function HomePage() {
               Experience the sublime taste of our hand-crafted cakes, melt-in-your-mouth pastries, artisanal sourdough breads, and custom confections. Baked fresh daily with heritage techniques and natural premium ingredients.
             </p>
             
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
               <a 
                 href="#properties" 
                 className="border-2 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-[var(--secondary)] font-semibold text-xs uppercase tracking-widest px-8 py-4 rounded-full transition-all duration-300"
@@ -422,7 +422,7 @@ export default function HomePage() {
             </div>
 
             {/* Baker Portrait and Mini Feature Card */}
-            <div className="flex flex-wrap gap-6 pt-8 items-center border-t border-[rgba(74,44,29,0.08)] mt-8">
+            <div className="flex flex-wrap gap-6 pt-8 items-center justify-center lg:justify-start border-t border-[rgba(74,44,29,0.08)] mt-8">
               {/* Chef Portrait Card */}
               <div className="flex items-center gap-3 bg-white/60 backdrop-blur-md border border-[rgba(74,44,29,0.06)] rounded-full p-2 pr-6 shadow-sm">
                 <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-[var(--primary)] flex-shrink-0">
@@ -453,7 +453,7 @@ export default function HomePage() {
           </div>
 
           {/* Right Side: Giant Chocolate Cake and Floating Cards */}
-          <div className="relative flex justify-center items-center w-full min-h-[450px] lg:min-h-[550px] py-12">
+          <div className="relative flex justify-center items-center w-full min-h-[350px] lg:min-h-[550px] py-8 lg:py-12">
             {/* Background glow and abstract chocolate shape */}
             <div className="absolute inset-0 flex items-center justify-center -z-10 overflow-visible">
               <div className="absolute w-[80%] h-[80%] bg-[var(--primary)] rounded-full opacity-10 filter blur-[80px]" />
