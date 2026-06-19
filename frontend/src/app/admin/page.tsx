@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
             <Lock className="text-white" size={20} />
           </div>
           <div>
-            <h2 className="text-2xl font-serif text-black font-semibold">Home Haven Console</h2>
+            <h2 className="text-2xl font-serif text-black font-semibold">Gem Crispy Console</h2>
             <p className="text-xs text-neutral-400 mt-1">Authenticate to access property & eShop controls</p>
           </div>
         </div>

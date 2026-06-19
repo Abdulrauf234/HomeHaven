@@ -6,11 +6,11 @@ import {
   DollarSign, Edit2, Save, X, Plus, Trash2, 
   TrendingUp, LogOut, ArrowLeft, Check
 } from 'lucide-react';
-import { api, Product } from '@/lib/api';
+import { api, Snack } from '@/lib/api';
 
 export default function PricingPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [snacks, setSnacks] = useState<Snack[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedPrices, setEditedPrices] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(false);
@@ -21,43 +21,43 @@ export default function PricingPage() {
     if (!token) {
       router.push('/admin');
     } else {
-      fetchProducts();
+      fetchSnacks();
     }
   }, [router]);
 
-  const fetchProducts = async () => {
+  const fetchSnacks = async () => {
     try {
-      const prods = await api.getProducts({});
-      setProducts(prods);
+      const prods = await api.getSnacks({});
+      setSnacks(prods);
     } catch (e) {
-      console.error('Error fetching products:', e);
+      console.error('Error fetching snacks:', e);
     }
   };
 
-  const handleEditStart = (productId: string, currentPrice: number) => {
-    setEditingId(productId);
-    setEditedPrices({ [productId]: currentPrice });
+  const handleEditStart = (snackId: string, currentPrice: number) => {
+    setEditingId(snackId);
+    setEditedPrices({ [snackId]: currentPrice });
   };
 
-  const handlePriceChange = (productId: string, newPrice: number) => {
-    setEditedPrices(prev => ({ ...prev, [productId]: newPrice }));
+  const handlePriceChange = (snackId: string, newPrice: number) => {
+    setEditedPrices(prev => ({ ...prev, [snackId]: newPrice }));
   };
 
-  const handleSavePrice = async (productId: string) => {
-    if (!editedPrices[productId]) return;
+  const handleSavePrice = async (snackId: string) => {
+    if (!editedPrices[snackId]) return;
     setLoading(true);
     try {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
+      const snack = snacks.find(p => p.id === snackId);
+      if (!snack) return;
 
-      await api.updateProduct(productId, {
-        ...product,
-        price: editedPrices[productId]
+      await api.updateSnack(snackId, {
+        ...snack,
+        price: editedPrices[snackId]
       });
 
-      setProducts(prev =>
+      setSnacks(prev =>
         prev.map(p =>
-          p.id === productId ? { ...p, price: editedPrices[productId] } : p
+          p.id === snackId ? { ...p, price: editedPrices[snackId] } : p
         )
       );
 
@@ -100,7 +100,7 @@ export default function PricingPage() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-black">Price Management</h1>
-                <p className="text-xs text-neutral-500">Manage all product pricing</p>
+                <p className="text-xs text-neutral-500">Manage all snack pricing</p>
               </div>
             </div>
           </div>
@@ -139,8 +139,8 @@ export default function PricingPage() {
           <div className="bg-white border border-neutral-200 rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-neutral-600 text-sm font-medium mb-1">Total Products</p>
-                <p className="text-3xl font-bold text-black">{products.length}</p>
+                <p className="text-neutral-600 text-sm font-medium mb-1">Total Snacks</p>
+                <p className="text-3xl font-bold text-black">{snacks.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
                 <TrendingUp className="text-blue-600" size={24} />
@@ -153,7 +153,7 @@ export default function PricingPage() {
               <div>
                 <p className="text-neutral-600 text-sm font-medium mb-1">Average Price</p>
                 <p className="text-3xl font-bold text-black">
-                  ${(products.reduce((sum, p) => sum + p.price, 0) / products.length || 0).toFixed(2)}
+                  ${(snacks.reduce((sum, p) => sum + p.price, 0) / snacks.length || 0).toFixed(2)}
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
@@ -167,7 +167,7 @@ export default function PricingPage() {
               <div>
                 <p className="text-neutral-600 text-sm font-medium mb-1">Total Inventory Value</p>
                 <p className="text-3xl font-bold text-black">
-                  ${products.reduce((sum, p) => sum + (p.price * (p.stock || 0)), 0).toFixed(2)}
+                  ${snacks.reduce((sum, p) => sum + (p.price * (p.stock || 0)), 0).toFixed(2)}
                 </p>
               </div>
               <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
@@ -183,7 +183,7 @@ export default function PricingPage() {
             <table className="w-full">
               <thead>
                 <tr className="bg-neutral-50 border-b border-neutral-200">
-                  <th className="px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider">Product Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider">Snack Name</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider">Category</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider">Current Price</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-neutral-600 uppercase tracking-wider">Stock</th>
@@ -191,51 +191,51 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr key={product.id} className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors">
+                {snacks.map((snack) => (
+                  <tr key={snack.id} className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
-                        <p className="font-semibold text-black text-sm">{product.name}</p>
-                        <p className="text-neutral-500 text-xs mt-1">{product.description}</p>
+                        <p className="font-semibold text-black text-sm">{snack.name}</p>
+                        <p className="text-neutral-500 text-xs mt-1">{snack.description}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-xs font-medium bg-neutral-100 text-neutral-700 px-3 py-1 rounded-full">
-                        {product.category}
+                        {snack.category}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {editingId === product.id ? (
+                      {editingId === snack.id ? (
                         <div className="flex items-center space-x-2">
                           <span className="text-neutral-600 font-medium">$</span>
                           <input
                             type="number"
-                            value={editedPrices[product.id] || product.price}
-                            onChange={(e) => handlePriceChange(product.id, parseFloat(e.target.value))}
+                            value={editedPrices[snack.id] || snack.price}
+                            onChange={(e) => handlePriceChange(snack.id, parseFloat(e.target.value))}
                             className="w-24 px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:border-black text-sm font-semibold"
                             step="0.01"
                             min="0"
                           />
                         </div>
                       ) : (
-                        <p className="font-bold text-black text-lg">${product.price.toFixed(2)}</p>
+                        <p className="font-bold text-black text-lg">${snack.price.toFixed(2)}</p>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                        product.availability === 'In Stock'
+                        snack.availability === 'In Stock'
                           ? 'bg-green-100 text-green-800'
                           : 'bg-red-100 text-red-800'
                       }`}>
-                        {product.stock || 0} units
+                        {snack.stock || 0} units
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
-                        {editingId === product.id ? (
+                        {editingId === snack.id ? (
                           <>
                             <button
-                              onClick={() => handleSavePrice(product.id)}
+                              onClick={() => handleSavePrice(snack.id)}
                               disabled={loading}
                               className="p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors disabled:opacity-50"
                               title="Save price"
@@ -252,7 +252,7 @@ export default function PricingPage() {
                           </>
                         ) : (
                           <button
-                            onClick={() => handleEditStart(product.id, product.price)}
+                            onClick={() => handleEditStart(snack.id, snack.price)}
                             className="p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition-colors"
                             title="Edit price"
                           >
@@ -267,10 +267,10 @@ export default function PricingPage() {
             </table>
           </div>
 
-          {products.length === 0 && (
+          {snacks.length === 0 && (
             <div className="py-12 text-center text-neutral-500">
               <DollarSign size={48} className="mx-auto opacity-30 mb-4" />
-              <p className="font-light">No products to manage pricing for</p>
+              <p className="font-light">No snacks to manage pricing for</p>
             </div>
           )}
         </div>

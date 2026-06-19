@@ -1,19 +1,18 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-export interface Property {
+export interface Equipment {
   id: string;
   images: string[];
   title: string;
   type: string;
-  location: string;
-  price: number;
-  bedrooms: number;
-  bathrooms: number;
   description: string;
+  price: number;
+  capacity: string;
+  power: string;
   availability: 'Available' | 'Sold';
 }
 
-export interface Product {
+export interface Snack {
   id: string;
   image: string;
   name: string;
@@ -37,139 +36,93 @@ export interface Enquiry {
 }
 
 // Fallback seed data in case API is offline
-const FALLBACK_PROPERTIES: Property[] = [
+const FALLBACK_EQUIPMENT: Equipment[] = [
   {
-    id: "prop1",
-    images: [
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80"
-    ],
-    title: "Classic Wedding Cake",
-    type: "Cakes",
-    location: "Main Bakery",
-    price: 250,
-    bedrooms: 3,
-    bathrooms: 50,
-    description: "Elegant three-tier wedding cake with smooth buttercream finish and delicate sugar flowers.",
+    id: "eq1",
+    images: ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"],
+    title: "Industrial Plantain Slicer",
+    type: "Slicing",
+    price: 1500,
+    capacity: "500kg/hr",
+    power: "2.2kW",
+    description: "High-speed industrial slicer perfect for uniform plantain chips production.",
     availability: "Available"
   },
   {
-    id: "prop2",
-    images: [
-      "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=800&q=80"
-    ],
-    title: "Assorted French Pastries",
-    type: "Pastries",
-    location: "Main Bakery",
-    price: 45,
-    bedrooms: 12,
-    bathrooms: 12,
-    description: "A delightful box of 12 assorted French pastries including eclairs, fruit tarts, and mille-feuille.",
+    id: "eq2",
+    images: ["https://images.unsplash.com/photo-1505236273191-1dce886b01e9?auto=format&fit=crop&w=800&q=80"],
+    title: "Commercial Deep Fryer",
+    type: "Frying",
+    price: 850,
+    capacity: "50 Liters",
+    power: "Gas/Electric",
+    description: "Thermostat-controlled deep fryer for consistent, golden crispy chips and peanut burger.",
     availability: "Available"
   },
   {
-    id: "prop3",
-    images: [
-      "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80"
-    ],
-    title: "Artisan Sourdough Loaf",
-    type: "Breads",
-    location: "Main Bakery",
-    price: 8,
-    bedrooms: 1,
-    bathrooms: 8,
-    description: "Freshly baked artisan sourdough bread with a perfectly crisp crust and chewy interior.",
+    id: "eq3",
+    images: ["https://images.unsplash.com/photo-1589792923962-537704632910?auto=format&fit=crop&w=800&q=80"],
+    title: "Heavy Duty Grinding Machine",
+    type: "Grinding",
+    price: 600,
+    capacity: "200kg/hr",
+    power: "1.5kW",
+    description: "Robust grinding machine ideal for processing peanuts for Kuli Kuli and other nuts.",
     availability: "Available"
   },
   {
-    id: "prop4",
-    images: [
-      "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80"
-    ],
-    title: "Glazed Gourmet Doughnuts",
-    type: "Doughnuts",
-    location: "Main Bakery",
-    price: 24,
-    bedrooms: 6,
-    bathrooms: 6,
-    description: "Box of 6 gourmet doughnuts with assorted glazes and toppings.",
-    availability: "Available"
-  },
-  {
-    id: "prop5",
-    images: [
-      "https://images.unsplash.com/photo-1563805042-7684c8e9e5cb?auto=format&fit=crop&w=800&q=80"
-    ],
-    title: "Signature Red Velvet Cake",
-    type: "Cakes",
-    location: "Main Bakery",
-    price: 65,
-    bedrooms: 1,
-    bathrooms: 12,
-    description: "Our signature moist red velvet cake with rich cream cheese frosting.",
+    id: "eq4",
+    images: ["https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=800&q=80"],
+    title: "Automatic Packaging Machine",
+    type: "Packaging",
+    price: 2200,
+    capacity: "30-50 bags/min",
+    power: "1.8kW",
+    description: "Form-fill-seal automatic packaging machine for hygienic and professional product sealing.",
     availability: "Available"
   }
 ];
 
-const FALLBACK_PRODUCTS: Product[] = [
+const FALLBACK_SNACKS: Snack[] = [
   {
-    id: "prod1",
-    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80",
-    name: "Chocolate Chip Cookies",
-    price: 18,
-    description: "Dozen freshly baked, chewy chocolate chip cookies made with premium Belgian chocolate.",
-    category: "Cookies",
+    id: "snk1",
+    image: "https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=800&q=80",
+    name: "Premium Plantain Chips",
+    price: 5,
+    description: "Crispy, naturally sweet, and perfectly salted plantain chips made from carefully selected ripe plantains.",
+    category: "Plantain Chips",
     availability: "In Stock",
-    stock: 50
+    stock: 500
   },
   {
-    id: "prod2",
-    image: "https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&w=800&q=80",
-    name: "Luxury Chocolate Truffles",
-    price: 35,
-    description: "Box of 16 handcrafted chocolate truffles in assorted flavors.",
-    category: "Chocolates",
+    id: "snk2",
+    image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=800&q=80",
+    name: "Spicy Peanut Burger",
+    price: 4,
+    description: "Crunchy, perfectly roasted peanuts coated in a delicious, mildly spicy batter. A classic favorite.",
+    category: "Peanut Burger",
     availability: "In Stock",
-    stock: 30
+    stock: 350
   },
   {
-    id: "prod3",
-    image: "https://images.unsplash.com/photo-1577222409054-944a9557b779?auto=format&fit=crop&w=800&q=80",
-    name: "Celebration Hamper",
-    price: 120,
-    description: "A beautiful gift hamper packed with our finest cookies, chocolates, and a bottle of sparkling cider.",
-    category: "Hampers",
+    id: "snk3",
+    image: "https://images.unsplash.com/photo-1605663737039-44671ea3ee1d?auto=format&fit=crop&w=800&q=80",
+    name: "Traditional Kuli Kuli",
+    price: 3,
+    description: "Authentic, crunchy groundnut snack seasoned with natural spices. Rich in protein and deeply flavorful.",
+    category: "Kuli Kuli",
     availability: "In Stock",
-    stock: 10
+    stock: 400
   },
   {
-    id: "prod4",
-    image: "https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?auto=format&fit=crop&w=800&q=80",
-    name: "Mini Vanilla Cupcakes",
-    price: 22,
-    description: "Pack of 12 mini vanilla cupcakes with swirl buttercream frosting.",
-    category: "Cupcakes",
+    id: "snk4",
+    image: "https://images.unsplash.com/photo-1622485501720-6d0ff2df713f?auto=format&fit=crop&w=800&q=80",
+    name: "Spicy Plantain Chips",
+    price: 5,
+    description: "Premium plantain chips tossed in a special blend of chili and spices for an extra kick.",
+    category: "Plantain Chips",
     availability: "In Stock",
-    stock: 40
-  },
-  {
-    id: "prod5",
-    image: "https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=80",
-    name: "Party Small Chops Box",
-    price: 45,
-    description: "Assorted savory finger foods perfect for small gatherings. Includes spring rolls, samosas, and puff-puff.",
-    category: "Small Chops",
-    availability: "In Stock",
-    stock: 25
-  },
-  {
-    id: "prod6",
-    image: "https://images.unsplash.com/photo-1560180474-e8563fd75bab?auto=format&fit=crop&w=800&q=80",
-    name: "Macaron Gift Box",
-    price: 28,
-    description: "Colorful assortment of 12 French macarons in classic flavors.",
-    category: "Gift Sets",
-    availability: "In Stock",
-    stock: 20
+    stock: 200
   }
 ];
 
@@ -181,73 +134,66 @@ function getHeaders() {
   };
 }
 
-let memoryProperties: Property[] | null = null;
-let memoryProducts: Product[] | null = null;
+let memoryEquipment: Equipment[] | null = null;
+let memorySnacks: Snack[] | null = null;
 let memoryEnquiries: Enquiry[] | null = null;
 
-// Memory-based clientside store fallback for testing/demoing when server is unavailable
 class ClientsideStore {
-  static getProperties() {
-    if (typeof window === 'undefined') return FALLBACK_PROPERTIES;
-    if (memoryProperties) return memoryProperties;
+  static getEquipment() {
+    if (typeof window === 'undefined') return FALLBACK_EQUIPMENT;
+    if (memoryEquipment) return memoryEquipment;
     try {
-      const stored = localStorage.getItem('local_properties');
+      const stored = localStorage.getItem('local_equipment');
       if (!stored) {
         try {
-          localStorage.setItem('local_properties', JSON.stringify(FALLBACK_PROPERTIES));
+          localStorage.setItem('local_equipment', JSON.stringify(FALLBACK_EQUIPMENT));
         } catch {}
-        memoryProperties = FALLBACK_PROPERTIES;
-        return FALLBACK_PROPERTIES;
+        memoryEquipment = FALLBACK_EQUIPMENT;
+        return FALLBACK_EQUIPMENT;
       }
-      memoryProperties = JSON.parse(stored);
-      return memoryProperties!;
+      memoryEquipment = JSON.parse(stored);
+      return memoryEquipment!;
     } catch {
-      memoryProperties = FALLBACK_PROPERTIES;
-      return FALLBACK_PROPERTIES;
+      memoryEquipment = FALLBACK_EQUIPMENT;
+      return FALLBACK_EQUIPMENT;
     }
   }
 
-  static saveProperties(props: Property[]) {
-    memoryProperties = props;
+  static saveEquipment(eqs: Equipment[]) {
+    memoryEquipment = eqs;
     try {
-      localStorage.setItem('local_properties', JSON.stringify(props));
+      localStorage.setItem('local_equipment', JSON.stringify(eqs));
     } catch (e) {
-      console.warn("Storage quota exceeded or error saving properties to localStorage:", e);
-      if (typeof window !== 'undefined') {
-        alert("Warning: Local storage quota exceeded (likely due to large base64 image uploads). Changes are saved in-memory for this session but will be lost on page reload.");
-      }
+      console.warn("Storage quota exceeded or error saving equipment to localStorage:", e);
     }
   }
 
-  static getProducts() {
-    if (typeof window === 'undefined') return FALLBACK_PRODUCTS;
-    if (memoryProducts) return memoryProducts;
+  static getSnacks() {
+    if (typeof window === 'undefined') return FALLBACK_SNACKS;
+    if (memorySnacks) return memorySnacks;
     try {
-      const stored = localStorage.getItem('local_products');
+      const stored = localStorage.getItem('local_snacks');
       if (!stored) {
         try {
-          localStorage.setItem('local_products', JSON.stringify(FALLBACK_PRODUCTS));
+          localStorage.setItem('local_snacks', JSON.stringify(FALLBACK_SNACKS));
         } catch {}
-        memoryProducts = FALLBACK_PRODUCTS;
-        return FALLBACK_PRODUCTS;
+        memorySnacks = FALLBACK_SNACKS;
+        return FALLBACK_SNACKS;
       }
-      memoryProducts = JSON.parse(stored);
-      return memoryProducts!;
+      memorySnacks = JSON.parse(stored);
+      return memorySnacks!;
     } catch {
-      memoryProducts = FALLBACK_PRODUCTS;
-      return FALLBACK_PRODUCTS;
+      memorySnacks = FALLBACK_SNACKS;
+      return FALLBACK_SNACKS;
     }
   }
 
-  static saveProducts(prods: Product[]) {
-    memoryProducts = prods;
+  static saveSnacks(snks: Snack[]) {
+    memorySnacks = snks;
     try {
-      localStorage.setItem('local_products', JSON.stringify(prods));
+      localStorage.setItem('local_snacks', JSON.stringify(snks));
     } catch (e) {
-      console.warn("Storage quota exceeded or error saving products to localStorage:", e);
-      if (typeof window !== 'undefined') {
-        alert("Warning: Local storage quota exceeded (likely due to large base64 image uploads). Changes are saved in-memory for this session but will be lost on page reload.");
-      }
+      console.warn("Storage quota exceeded or error saving snacks to localStorage:", e);
     }
   }
 
@@ -277,7 +223,6 @@ class ClientsideStore {
 }
 
 export const api = {
-  // Authentication
   login: async (username: string, password: string): Promise<{ token: string; admin: { username: string } }> => {
     try {
       const res = await fetch(`${API_BASE}/auth/login`, {
@@ -299,53 +244,51 @@ export const api = {
     }
   },
 
-  // Properties API
-  getProperties: async (filters?: { type?: string; search?: string }): Promise<Property[]> => {
+  getEquipment: async (filters?: { type?: string; search?: string }): Promise<Equipment[]> => {
     try {
       const query = new URLSearchParams();
       if (filters?.type) query.append('type', filters.type);
       if (filters?.search) query.append('search', filters.search);
-      const res = await fetch(`${API_BASE}/properties?${query.toString()}`);
+      const res = await fetch(`${API_BASE}/equipment?${query.toString()}`);
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      let list = ClientsideStore.getProperties();
+      let list = ClientsideStore.getEquipment();
       if (filters?.type) {
-        list = list.filter((p: Property) => p.type.toLowerCase() === filters.type!.toLowerCase());
+        list = list.filter((e: Equipment) => e.type.toLowerCase() === filters.type!.toLowerCase());
       }
       if (filters?.search) {
         const searchVal = filters.search.toLowerCase();
-        list = list.filter((p: Property) =>
-          p.title.toLowerCase().includes(searchVal) ||
-          p.location.toLowerCase().includes(searchVal) ||
-          p.description.toLowerCase().includes(searchVal)
+        list = list.filter((e: Equipment) =>
+          e.title.toLowerCase().includes(searchVal) ||
+          e.description.toLowerCase().includes(searchVal)
         );
       }
       return list;
     }
   },
 
-  createProperty: async (property: Omit<Property, 'id'>): Promise<Property> => {
+  createEquipment: async (equipment: Omit<Equipment, 'id'>): Promise<Equipment> => {
     try {
-      const res = await fetch(`${API_BASE}/properties`, {
+      const res = await fetch(`${API_BASE}/equipment`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify(property)
+        body: JSON.stringify(equipment)
       });
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      const list = ClientsideStore.getProperties();
-      const newProp = { ...property, id: 'prop_' + Date.now() };
-      list.push(newProp);
-      ClientsideStore.saveProperties(list);
-      return newProp;
+      const list = ClientsideStore.getEquipment();
+      const newEq = { ...equipment, id: 'eq_' + Date.now() };
+      list.push(newEq);
+      ClientsideStore.saveEquipment(list);
+      return newEq;
     }
   },
 
-  updateProperty: async (id: string, updates: Partial<Property>): Promise<Property> => {
+  updateEquipment: async (id: string, updates: Partial<Equipment>): Promise<Equipment> => {
     try {
-      const res = await fetch(`${API_BASE}/properties/${id}`, {
+      const res = await fetch(`${API_BASE}/equipment/${id}`, {
         method: 'PUT',
         headers: getHeaders(),
         body: JSON.stringify(updates)
@@ -353,78 +296,77 @@ export const api = {
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      const list = ClientsideStore.getProperties();
-      const idx = list.findIndex((p: Property) => p.id === id);
+      const list = ClientsideStore.getEquipment();
+      const idx = list.findIndex((e: Equipment) => e.id === id);
       if (idx !== -1) {
         list[idx] = { ...list[idx], ...updates };
-        ClientsideStore.saveProperties(list);
+        ClientsideStore.saveEquipment(list);
         return list[idx];
       }
-      throw new Error("Property not found in fallback storage");
+      throw new Error("Equipment not found");
     }
   },
 
-  deleteProperty: async (id: string): Promise<boolean> => {
+  deleteEquipment: async (id: string): Promise<boolean> => {
     try {
-      const res = await fetch(`${API_BASE}/properties/${id}`, {
+      const res = await fetch(`${API_BASE}/equipment/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
       });
       return res.ok;
     } catch {
-      const list = ClientsideStore.getProperties();
-      const filtered = list.filter((p: Property) => p.id !== id);
-      ClientsideStore.saveProperties(filtered);
+      const list = ClientsideStore.getEquipment();
+      const filtered = list.filter((e: Equipment) => e.id !== id);
+      ClientsideStore.saveEquipment(filtered);
       return true;
     }
   },
 
-  // Products API
-  getProducts: async (filters?: { category?: string; search?: string }): Promise<Product[]> => {
+  getSnacks: async (filters?: { category?: string; search?: string }): Promise<Snack[]> => {
     try {
       const query = new URLSearchParams();
       if (filters?.category) query.append('category', filters.category);
       if (filters?.search) query.append('search', filters.search);
-      const res = await fetch(`${API_BASE}/products?${query.toString()}`);
+      const res = await fetch(`${API_BASE}/snacks?${query.toString()}`);
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      let list = ClientsideStore.getProducts();
+      let list = ClientsideStore.getSnacks();
       if (filters?.category) {
-        list = list.filter((p: Product) => p.category.toLowerCase() === filters.category!.toLowerCase());
+        list = list.filter((s: Snack) => s.category.toLowerCase() === filters.category!.toLowerCase());
       }
       if (filters?.search) {
         const searchVal = filters.search.toLowerCase();
-        list = list.filter((p: Product) =>
-          p.name.toLowerCase().includes(searchVal) ||
-          p.description.toLowerCase().includes(searchVal)
+        list = list.filter((s: Snack) =>
+          s.name.toLowerCase().includes(searchVal) ||
+          s.description.toLowerCase().includes(searchVal)
         );
       }
       return list;
     }
   },
 
-  createProduct: async (product: Omit<Product, 'id'>): Promise<Product> => {
+  createSnack: async (snack: Omit<Snack, 'id'>): Promise<Snack> => {
     try {
-      const res = await fetch(`${API_BASE}/products`, {
+      const res = await fetch(`${API_BASE}/snacks`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify(product)
+        body: JSON.stringify(snack)
       });
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      const list = ClientsideStore.getProducts();
-      const newProd = { ...product, id: 'prod_' + Date.now() };
-      list.push(newProd);
-      ClientsideStore.saveProducts(list);
-      return newProd;
+      const list = ClientsideStore.getSnacks();
+      const newSnk = { ...snack, id: 'snk_' + Date.now() };
+      list.push(newSnk);
+      ClientsideStore.saveSnacks(list);
+      return newSnk;
     }
   },
 
-  updateProduct: async (id: string, updates: Partial<Product>): Promise<Product> => {
+  updateSnack: async (id: string, updates: Partial<Snack>): Promise<Snack> => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`, {
+      const res = await fetch(`${API_BASE}/snacks/${id}`, {
         method: 'PUT',
         headers: getHeaders(),
         body: JSON.stringify(updates)
@@ -432,33 +374,32 @@ export const api = {
       if (!res.ok) throw new Error();
       return await res.json();
     } catch {
-      const list = ClientsideStore.getProducts();
-      const idx = list.findIndex((p: Product) => p.id === id);
+      const list = ClientsideStore.getSnacks();
+      const idx = list.findIndex((s: Snack) => s.id === id);
       if (idx !== -1) {
         list[idx] = { ...list[idx], ...updates };
-        ClientsideStore.saveProducts(list);
+        ClientsideStore.saveSnacks(list);
         return list[idx];
       }
-      throw new Error("Product not found in fallback storage");
+      throw new Error("Snack not found");
     }
   },
 
-  deleteProduct: async (id: string): Promise<boolean> => {
+  deleteSnack: async (id: string): Promise<boolean> => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`, {
+      const res = await fetch(`${API_BASE}/snacks/${id}`, {
         method: 'DELETE',
         headers: getHeaders()
       });
       return res.ok;
     } catch {
-      const list = ClientsideStore.getProducts();
-      const filtered = list.filter((p: Product) => p.id !== id);
-      ClientsideStore.saveProducts(filtered);
+      const list = ClientsideStore.getSnacks();
+      const filtered = list.filter((s: Snack) => s.id !== id);
+      ClientsideStore.saveSnacks(filtered);
       return true;
     }
   },
 
-  // Enquiries API
   getEnquiries: async (): Promise<Enquiry[]> => {
     try {
       const res = await fetch(`${API_BASE}/enquiries`, {
@@ -491,7 +432,6 @@ export const api = {
     }
   },
 
-  // Image Upload API
   uploadImage: async (file: File): Promise<string> => {
     try {
       const formData = new FormData();
@@ -543,7 +483,6 @@ export const api = {
               const ctx = canvas.getContext('2d');
               if (ctx) {
                 ctx.drawImage(img, 0, 0, width, height);
-                // Compress to JPEG with 0.6 quality
                 const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
                 resolve(dataUrl);
               } else {

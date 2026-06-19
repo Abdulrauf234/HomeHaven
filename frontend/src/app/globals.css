@@ -10,37 +10,38 @@
 .bg-secondary { background-color: var(--secondary); }
 
 :root {
-  --primary: #D4A017; /* Primary Gold */
-  --secondary: #F7E9D7; /* Soft Beige */
-  --accent: #4A2C1D; /* Chocolate Brown */
-  --background: #FDF9F3; /* Warm Cream */
-  --text: #2C1810; /* Text Dark */
+  --primary: #FDB813; /* Warm Plantain Yellow */
+  --secondary: #FFF8E7; /* Light Warm Background */
+  --accent: #E65C00; /* Deep Orange */
+  --background: #FCFCF9; /* Off-white Cream */
+  --text: #1E2E1A; /* Dark Natural Green */
+  --green-main: #2E5C31; /* Main Green */
   
-  --primary-gold: #D4A017;
-  --chocolate-brown: #4A2C1D;
-  --soft-beige: #F7E9D7;
-  --warm-cream: #FDF9F3;
-  --text-dark: #2C1810;
+  --primary-gold: #FDB813;
+  --chocolate-brown: #1E2E1A;
+  --soft-beige: #FFF8E7;
+  --warm-cream: #FCFCF9;
+  --text-dark: #1E2E1A;
   
-  --gray-100: #f7f4ed;
-  --gray-200: #eedec8;
-  --gray-300: #d8c2a3;
-  --gray-400: #bfa57f;
-  --gray-500: #9c805c;
-  --gray-600: #7e6341;
-  --gray-700: #624b30;
-  --gray-800: #493621;
-  --gray-900: #332415;
-  --gray-950: #1f140a;
+  --gray-100: #f5f6f3;
+  --gray-200: #e7eadf;
+  --gray-300: #d2dac7;
+  --gray-400: #b5c3a7;
+  --gray-500: #93a781;
+  --gray-600: #748862;
+  --gray-700: #596b4b;
+  --gray-800: #46553d;
+  --gray-900: #3c4735;
+  --gray-950: #1e2e1a;
 }
 
 /* Tailwind 4 theme extensions */
 @theme {
-  --color-primary-gold: #D4A017;
-  --color-chocolate-brown: #4A2C1D;
-  --color-soft-beige: #F7E9D7;
-  --color-warm-cream: #FDF9F3;
-  --color-text-dark: #2C1810;
+  --color-primary-gold: #FDB813;
+  --color-chocolate-brown: #1E2E1A;
+  --color-soft-beige: #FFF8E7;
+  --color-warm-cream: #FCFCF9;
+  --color-text-dark: #1E2E1A;
 }
 
 /* Smooth Scrolling */

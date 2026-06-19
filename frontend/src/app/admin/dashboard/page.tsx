@@ -2,60 +2,61 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { 
-  Building, ShoppingBag, Mail, TrendingUp, LogOut, Plus, Trash2, 
-  Edit, CheckCircle, XCircle, Home, Upload, Layers, PlusCircle, Check, DollarSign
+  LogOut, Plus, Edit2, Trash2, X, Upload, 
+  Settings, ShoppingBag, MessageSquare, Menu, CheckCircle
 } from 'lucide-react';
-import { api, Property, Product, Enquiry } from '@/lib/api';
+import { api, Equipment, Snack, Enquiry } from '@/lib/api';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'analytics' | 'properties' | 'shop' | 'leads'>('analytics');
-  
+
   // Data lists
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [equipment, setEquipment] = useState<Equipment[]>([]);
+  const [snacks, setSnacks] = useState<Snack[]>([]);
   const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
 
-  // CRUD Forms
-  const [propertyForm, setPropertyForm] = useState({
-    id: '', // Empty if creating
+  // UI State
+  const [activeTab, setActiveTab] = useState<'equipment' | 'snacks' | 'enquiries'>('equipment');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Modals
+  const [isEquipmentModalOpen, setIsEquipmentModalOpen] = useState(false);
+  const [isSnackModalOpen, setIsSnackModalOpen] = useState(false);
+
+  // Editing state
+  const [editingEquipmentId, setEditingEquipmentId] = useState<string | null>(null);
+  const [editingSnackId, setEditingSnackId] = useState<string | null>(null);
+
+  // Forms
+  const [equipmentForm, setEquipmentForm] = useState({
     title: '',
-    type: 'Cakes',
-    location: '',
+    type: 'Slicing',
+    capacity: '',
+    power: '',
     price: '',
-    bedrooms: '',
-    bathrooms: '',
     description: '',
     images: [] as string[],
     availability: 'Available' as 'Available' | 'Sold'
   });
 
-  const [productForm, setProductForm] = useState({
-    id: '', // Empty if creating
+  const [snackForm, setSnackForm] = useState({
     name: '',
-    category: 'Cookies',
+    category: 'Plantain Chips',
     price: '',
+    stock: '',
     description: '',
     image: '',
-    availability: 'In Stock' as 'In Stock' | 'Out of Stock',
-    stock: ''
+    availability: 'In Stock' as 'In Stock' | 'Out of Stock'
   });
 
-  // Modal / Editing states
-  const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
-  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [isEditingProperty, setIsEditingProperty] = useState(false);
-  const [isEditingProduct, setIsEditingProduct] = useState(false);
-
-  // File upload helper loading states
+  // Upload state
   const [uploadingImage, setUploadingImage] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const prodFileInputRef = useRef<HTMLInputElement>(null);
+  const eqFileInputRef = useRef<HTMLInputElement>(null);
+  const snackFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Auth Validation
     const token = localStorage.getItem('haven_token');
     if (!token) {
       router.push('/admin');
@@ -66,11 +67,11 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     try {
-      const props = await api.getProperties();
-      const prods = await api.getProducts();
+      const eq = await api.getEquipment({});
+      const snks = await api.getSnacks({});
       const enqs = await api.getEnquiries();
-      setProperties(props);
-      setProducts(prods);
+      setEquipment(eq);
+      setSnacks(snks);
       setEnquiries(enqs);
     } catch (e) {
       console.error(e);
@@ -82,1023 +83,462 @@ export default function AdminDashboard() {
     router.push('/admin');
   };
 
-  // Image Upload handler
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'property' | 'product') => {
+  // EQUIPMENT CRUD
+  const resetEquipmentForm = () => {
+    setEquipmentForm({
+      title: '',
+      type: 'Slicing',
+      capacity: '',
+      power: '',
+      price: '',
+      description: '',
+      images: [],
+      availability: 'Available'
+    });
+    setEditingEquipmentId(null);
+  };
+
+  const handleEquipmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        title: equipmentForm.title,
+        type: equipmentForm.type,
+        capacity: equipmentForm.capacity,
+        power: equipmentForm.power,
+        price: Number(equipmentForm.price),
+        description: equipmentForm.description,
+        images: equipmentForm.images.length > 0 ? equipmentForm.images : ["https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80"],
+        availability: equipmentForm.availability
+      };
+
+      if (editingEquipmentId) {
+        await api.updateEquipment(editingEquipmentId, payload);
+      } else {
+        await api.createEquipment(payload);
+      }
+      setIsEquipmentModalOpen(false);
+      resetEquipmentForm();
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const editEquipment = (eq: Equipment) => {
+    setEditingEquipmentId(eq.id);
+    setEquipmentForm({
+      title: eq.title,
+      type: eq.type,
+      capacity: eq.capacity,
+      power: eq.power,
+      price: String(eq.price),
+      description: eq.description,
+      images: eq.images,
+      availability: eq.availability
+    });
+    setIsEquipmentModalOpen(true);
+  };
+
+  const deleteEquipment = async (id: string) => {
+    if (confirm('Delete this equipment?')) {
+      await api.deleteEquipment(id);
+      fetchData();
+    }
+  };
+
+  // SNACK CRUD
+  const resetSnackForm = () => {
+    setSnackForm({
+      name: '',
+      category: 'Plantain Chips',
+      price: '',
+      stock: '',
+      description: '',
+      image: '',
+      availability: 'In Stock'
+    });
+    setEditingSnackId(null);
+  };
+
+  const handleSnackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        name: snackForm.name,
+        category: snackForm.category,
+        price: Number(snackForm.price),
+        stock: Number(snackForm.stock),
+        description: snackForm.description,
+        image: snackForm.image || "https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=800&q=80",
+        availability: snackForm.availability
+      };
+
+      if (editingSnackId) {
+        await api.updateSnack(editingSnackId, payload);
+      } else {
+        await api.createSnack(payload);
+      }
+      setIsSnackModalOpen(false);
+      resetSnackForm();
+      fetchData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const editSnack = (snk: Snack) => {
+    setEditingSnackId(snk.id);
+    setSnackForm({
+      name: snk.name,
+      category: snk.category,
+      price: String(snk.price),
+      stock: String(snk.stock),
+      description: snk.description,
+      image: snk.image,
+      availability: snk.availability
+    });
+    setIsSnackModalOpen(true);
+  };
+
+  const deleteSnack = async (id: string) => {
+    if (confirm('Delete this snack?')) {
+      await api.deleteSnack(id);
+      fetchData();
+    }
+  };
+
+  // UPLOAD
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'equipment' | 'snack') => {
     if (!e.target.files || e.target.files.length === 0) return;
     setUploadingImage(true);
     try {
       const file = e.target.files[0];
       const url = await api.uploadImage(file);
-      if (target === 'property') {
-        setPropertyForm(prev => ({
-          ...prev,
-          images: [...prev.images, url]
-        }));
+      if (target === 'equipment') {
+        setEquipmentForm(prev => ({ ...prev, images: [...prev.images, url] }));
       } else {
-        setProductForm(prev => ({
-          ...prev,
-          image: url
-        }));
+        setSnackForm(prev => ({ ...prev, image: url }));
       }
     } catch (err) {
-      alert("Failed to upload image. Fallback base64 used.");
+      alert("Failed to upload image.");
     } finally {
       setUploadingImage(false);
     }
   };
 
-  // Property CRUD
-  const handlePropertySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!propertyForm.title || !propertyForm.location || !propertyForm.price) return;
-
-    const payload = {
-      title: propertyForm.title,
-      type: propertyForm.type,
-      location: propertyForm.location,
-      price: Number(propertyForm.price),
-      bedrooms: Number(propertyForm.bedrooms || 0),
-      bathrooms: Number(propertyForm.bathrooms || 0),
-      description: propertyForm.description,
-      images: propertyForm.images.length > 0 ? propertyForm.images : ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"],
-      availability: propertyForm.availability
-    };
-
-    try {
-      if (isEditingProperty) {
-        await api.updateProperty(propertyForm.id, payload);
-      } else {
-        await api.createProperty(payload);
-      }
-      setIsPropertyModalOpen(false);
-      resetPropertyForm();
-      fetchData();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const editProperty = (prop: Property) => {
-    setIsEditingProperty(true);
-    setPropertyForm({
-      id: prop.id,
-      title: prop.title,
-      type: prop.type,
-      location: prop.location,
-      price: String(prop.price),
-      bedrooms: String(prop.bedrooms),
-      bathrooms: String(prop.bathrooms),
-      description: prop.description,
-      images: prop.images,
-      availability: prop.availability
-    });
-    setIsPropertyModalOpen(true);
-  };
-
-  const deleteProperty = async (id: string) => {
-    if (confirm("Are you sure you want to delete this property listing?")) {
-      try {
-        await api.deleteProperty(id);
-        fetchData();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
-  const togglePropertyStatus = async (prop: Property) => {
-    const nextStatus = prop.availability === 'Available' ? 'Sold' : 'Available';
-    try {
-      await api.updateProperty(prop.id, { availability: nextStatus });
-      fetchData();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const resetPropertyForm = () => {
-    setIsEditingProperty(false);
-    setPropertyForm({
-      id: '',
-      title: '',
-      type: 'Apartment',
-      location: '',
-      price: '',
-      bedrooms: '',
-      bathrooms: '',
-      description: '',
-      images: [],
-      availability: 'Available'
-    });
-  };
-
-  // Product CRUD
-  const handleProductSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!productForm.name || !productForm.price || !productForm.stock) return;
-
-    const payload = {
-      name: productForm.name,
-      category: productForm.category,
-      price: Number(productForm.price),
-      description: productForm.description,
-      image: productForm.image || "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80",
-      availability: productForm.availability,
-      stock: Number(productForm.stock)
-    };
-
-    try {
-      if (isEditingProduct) {
-        await api.updateProduct(productForm.id, payload);
-      } else {
-        await api.createProduct(payload);
-      }
-      setIsProductModalOpen(false);
-      resetProductForm();
-      fetchData();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const editProduct = (prod: Product) => {
-    setIsEditingProduct(true);
-    setProductForm({
-      id: prod.id,
-      name: prod.name,
-      category: prod.category,
-      price: String(prod.price),
-      description: prod.description,
-      image: prod.image,
-      availability: prod.availability,
-      stock: String(prod.stock)
-    });
-    setIsProductModalOpen(true);
-  };
-
-  const deleteProduct = async (id: string) => {
-    if (confirm("Are you sure you want to remove this product from the shop?")) {
-      try {
-        await api.deleteProduct(id);
-        fetchData();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
-
-  const toggleProductStatus = async (prod: Product) => {
-    const nextStatus = prod.availability === 'In Stock' ? 'Out of Stock' : 'In Stock';
-    try {
-      await api.updateProduct(prod.id, { availability: nextStatus });
-      fetchData();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const resetProductForm = () => {
-    setIsEditingProduct(false);
-    setProductForm({
-      id: '',
-      name: '',
-      category: 'Cookies',
-      price: '',
-      description: '',
-      image: '',
-      availability: 'In Stock',
-      stock: ''
-    });
-  };
-
-  // Analytics helper calculations
-  const totalProperties = properties.length;
-  const soldProperties = properties.filter(p => p.availability === 'Sold').length;
-  const availableProperties = totalProperties - soldProperties;
-  const totalProducts = products.length;
-  const totalEnquiries = enquiries.length;
-  const whatsappLeadsCount = enquiries.filter(e => e.type === 'whatsapp').length;
-  
-  // Estimate revenue as sum of sold properties + mock multiplier
-  const estimatedRevenue = properties
-    .filter(p => p.availability === 'Sold')
-    .reduce((sum, p) => sum + p.price, 0);
-
-  const categories = ['Cakes', 'Pastries', 'Breads', 'Doughnuts', 'Specialty Items'];
-  const shopCategories = ['Cookies', 'Chocolates', 'Gift Sets', 'Cupcakes', 'Small Chops', 'Hampers'];
-
   return (
-    <div className="bg-neutral-50 min-h-screen flex text-black font-sans selection:bg-black selection:text-white">
-      
-      {/* Sidebar Panel */}
-      <aside className="w-64 bg-black text-white p-6 flex flex-col justify-between hidden md:flex border-r border-neutral-850">
-        <div className="space-y-8">
-          {/* Logo */}
-          <a href="/" className="flex items-center space-x-2 border-b border-neutral-800 pb-6">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-sm">G</span>
-            </div>
-            <span className="text-white font-extrabold tracking-widest text-sm uppercase font-serif">Gem Crispy</span>
-          </a>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <div className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 flex flex-col`}>
+        <div className="h-16 flex items-center px-6 border-b border-gray-200">
+          <div className="w-8 h-8 bg-[var(--primary)] rounded-full flex items-center justify-center mr-3">
+            <span className="text-[var(--text-dark)] font-bold text-lg">G</span>
+          </div>
+          <span className="font-bold text-[var(--text-dark)]">Admin Panel</span>
+        </div>
+        <div className="flex-1 py-6 px-4 space-y-2">
+          <button onClick={() => setActiveTab('equipment')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'equipment' ? 'bg-[var(--primary)] text-[var(--text-dark)] font-bold' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <Settings size={20} />
+            <span>Equipment</span>
+          </button>
+          <button onClick={() => setActiveTab('snacks')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'snacks' ? 'bg-[var(--primary)] text-[var(--text-dark)] font-bold' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <ShoppingBag size={20} />
+            <span>Snacks</span>
+          </button>
+          <button onClick={() => setActiveTab('enquiries')} className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${activeTab === 'enquiries' ? 'bg-[var(--primary)] text-[var(--text-dark)] font-bold' : 'text-gray-600 hover:bg-gray-100'}`}>
+            <MessageSquare size={20} />
+            <span>Enquiries</span>
+          </button>
+        </div>
+        <div className="p-4 border-t border-gray-200">
+          <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium">
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
 
-          {/* Nav */}
-          <nav className="flex flex-col space-y-2 text-xs font-semibold uppercase tracking-wider">
-            <button 
-              onClick={() => setActiveTab('analytics')}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'analytics' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
-              }`}
-            >
-              <TrendingUp size={16} />
-              <span>Overview Analytics</span>
-            </button>
-            
-            <button 
-              onClick={() => setActiveTab('properties')}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'properties' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
-              }`}
-            >
-              <Building size={16} />
-              <span>Bakery Products</span>
-            </button>
-
-            <button 
-              onClick={() => setActiveTab('shop')}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'shop' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
-              }`}
-            >
-              <ShoppingBag size={16} />
-              <span>Snacks &amp; Bulk Orders</span>
-            </button>
-
-            <button 
-              onClick={() => setActiveTab('leads')}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'leads' ? 'bg-white text-black' : 'text-neutral-400 hover:text-white hover:bg-neutral-900'
-              }`}
-            >
-              <Mail size={16} />
-              <span>Leads & Enquiries</span>
-            </button>
-
-            <a 
-              href="/admin/dashboard/prices"
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all text-neutral-400 hover:text-white hover:bg-neutral-900`}
-            >
-              <DollarSign size={16} />
-              <span>Manage Prices</span>
-            </a>
-          </nav>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="h-16 bg-white border-b border-gray-200 flex items-center px-6 lg:hidden">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="text-gray-600 p-2 -ml-2">
+            <Menu size={24} />
+          </button>
+          <span className="font-bold text-[var(--text-dark)] ml-4">Admin Panel</span>
         </div>
 
-        {/* User / Logout */}
-        <div className="border-t border-neutral-800 pt-6">
-          <div className="flex items-center justify-between text-xs text-neutral-400">
+        <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
+          {activeTab === 'equipment' && (
             <div>
-              <p className="font-bold text-white">admin</p>
-              <p className="text-[10px] text-neutral-500">homehaven</p>
-            </div>
-            <button onClick={handleLogout} className="p-2 hover:bg-neutral-950 rounded-lg hover:text-white transition-all">
-              <LogOut size={16} />
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Panel Content */}
-      <main className="flex-grow p-8 overflow-y-auto">
-        
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-neutral-200 pb-6 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold font-serif text-black uppercase tracking-wide">
-              {activeTab === 'analytics' && 'Dashboard Overview'}
-              {activeTab === 'properties' && 'Bakery Products'}
-              {activeTab === 'shop' && 'Snacks & Bulk Orders'}
-              {activeTab === 'leads' && 'Customer Orders & Inquiries'}
-            </h1>
-            <p className="text-xs text-neutral-400">Manage Gem Crispy Confectionery products and customer orders</p>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <a href="/" className="text-xs border border-neutral-300 hover:border-black font-semibold text-black px-4 py-2 rounded-xl transition-colors">
-              View Website
-            </a>
-            <button 
-              onClick={handleLogout}
-              className="md:hidden text-xs bg-black text-white px-4 py-2 rounded-xl"
-            >
-              Sign Out
-            </button>
-          </div>
-        </header>
-
-        {/* Tab switcher for mobile screens */}
-        <div className="flex md:hidden items-center overflow-x-auto border-b border-neutral-200 pb-3 mb-6 gap-2 text-[10px] font-bold uppercase tracking-wider">
-          <button onClick={() => setActiveTab('analytics')} className={`px-4 py-2 rounded-lg ${activeTab === 'analytics' ? 'bg-black text-white':'bg-white border'}`}>Overview</button>
-          <button onClick={() => setActiveTab('properties')} className={`px-4 py-2 rounded-lg ${activeTab === 'properties' ? 'bg-black text-white':'bg-white border'}`}>Bakery</button>
-          <button onClick={() => setActiveTab('shop')} className={`px-4 py-2 rounded-lg ${activeTab === 'shop' ? 'bg-black text-white':'bg-white border'}`}>Snacks</button>
-          <button onClick={() => setActiveTab('leads')} className={`px-4 py-2 rounded-lg ${activeTab === 'leads' ? 'bg-black text-white':'bg-white border'}`}>Orders</button>
-        </div>
-
-        {/* TAB 1: ANALYTICS */}
-        {activeTab === 'analytics' && (
-          <div className="space-y-8">
-            {/* Top Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
-                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Total Properties</span>
-                <div className="flex items-baseline space-x-2 mt-4">
-                  <span className="text-3xl font-serif font-bold text-black">{totalProperties}</span>
-                  <span className="text-xs text-neutral-400">({availableProperties} available)</span>
-                </div>
+              <div className="flex justify-between items-center mb-8">
+                <h1 className="text-2xl font-bold text-gray-900">Processing Equipment</h1>
+                <button onClick={() => { resetEquipmentForm(); setIsEquipmentModalOpen(true); }} className="bg-[var(--text-dark)] text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2">
+                  <Plus size={18} />
+                  <span>Add Equipment</span>
+                </button>
               </div>
-
-              <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
-                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Out of Stock</span>
-                <div className="flex items-baseline space-x-2 mt-4">
-                  <span className="text-3xl font-serif font-bold text-black">{soldProperties}</span>
-                  <span className="text-xs text-neutral-400">({Math.round((soldProperties / (totalProperties || 1)) * 100)}% unavailable)</span>
-                </div>
-              </div>
-
-              <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
-                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Inventory Products</span>
-                <div className="flex items-baseline space-x-2 mt-4">
-                  <span className="text-3xl font-serif font-bold text-black">{totalProducts}</span>
-                  <span className="text-xs text-neutral-400">Items in Shop</span>
-                </div>
-              </div>
-
-              <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between">
-                <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Leads Logged</span>
-                <div className="flex items-baseline space-x-2 mt-4">
-                  <span className="text-3xl font-serif font-bold text-black">{totalEnquiries}</span>
-                  <span className="text-xs text-neutral-400">({whatsappLeadsCount} WhatsApp clicks)</span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Sub stats */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Financial Box */}
-              <div className="bg-neutral-900 text-white rounded-[2rem] p-8 lg:col-span-2 flex flex-col justify-between min-h-[220px]">
-                <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-400">Estimated Total Revenue Flow</span>
-                  <h3 className="text-4xl font-serif font-bold text-white">${estimatedRevenue.toLocaleString()}</h3>
-                </div>
-                <div className="text-xs text-neutral-400 border-t border-neutral-850 pt-4 mt-6 leading-relaxed">
-                  Sum total calculated based on product orders. Orders are tracked separately via WhatsApp and contact forms.
-                </div>
-              </div>
-
-              {/* Quick links box */}
-              <div className="bg-white border border-neutral-200/60 p-8 rounded-[2rem] shadow-sm flex flex-col justify-between">
-                <h4 className="font-serif font-bold text-base text-black mb-4">Quick Admin Controls</h4>
-                <div className="flex flex-col space-y-2">
-                  <button 
-                    onClick={() => { resetPropertyForm(); setIsPropertyModalOpen(true); }}
-                    className="w-full bg-black hover:bg-neutral-800 text-white py-3 rounded-xl text-xs font-bold uppercase transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <PlusCircle size={14} />
-                    <span>Post New Property</span>
-                  </button>
-                  <button 
-                    onClick={() => { resetProductForm(); setIsProductModalOpen(true); }}
-                    className="w-full border border-neutral-350 hover:border-black text-black py-3 rounded-xl text-xs font-bold uppercase transition-colors flex items-center justify-center space-x-2"
-                  >
-                    <PlusCircle size={14} />
-                    <span>Add Shop Product</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Recent Leads Preview */}
-            <div className="bg-white border border-neutral-200/60 rounded-[2rem] p-8 shadow-sm">
-              <h4 className="font-serif font-bold text-base text-black mb-6">Recent Customer Enquiries</h4>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-neutral-100 text-neutral-400 font-bold uppercase tracking-wider pb-3">
-                      <th className="py-3">Client</th>
-                      <th>Phone</th>
-                      <th>Type</th>
-                      <th>Reference Title</th>
-                      <th>Details</th>
-                      <th>Timestamp</th>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <table className="w-full text-left text-sm text-gray-600">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-900">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold">Title</th>
+                      <th className="px-6 py-4 font-semibold">Type</th>
+                      <th className="px-6 py-4 font-semibold">Price</th>
+                      <th className="px-6 py-4 font-semibold">Status</th>
+                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {enquiries.slice(0, 5).map((enq) => (
-                      <tr key={enq.id} className="border-b border-neutral-50 hover:bg-neutral-50/50">
-                        <td className="py-4 font-bold text-black">{enq.name}</td>
-                        <td className="text-neutral-500">{enq.phone}</td>
-                        <td>
-                          <span className={`text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${
-                            enq.type === 'whatsapp' ? 'bg-[#25D366]/10 text-[#25D366]' :
-                            enq.type === 'inspection' ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-600'
-                          }`}>
-                            {enq.type}
-                          </span>
-                        </td>
-                        <td className="font-medium text-black">{enq.targetTitle || 'General Enquiry'}</td>
-                        <td className="text-neutral-500 font-light max-w-xs truncate">{enq.message || '-'}</td>
-                        <td className="text-neutral-400">{new Date(enq.createdAt).toLocaleDateString()}</td>
-                      </tr>
-                    ))}
-                    {enquiries.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="py-8 text-center text-neutral-400 font-light">
-                          No recent customer leads found.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* TAB 2: PROPERTIES */}
-        {activeTab === 'properties' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between pb-2">
-              <span className="text-xs text-neutral-400 font-bold uppercase tracking-wider">{properties.length} Products</span>
-              <button 
-                onClick={() => { resetPropertyForm(); setIsPropertyModalOpen(true); }}
-                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase transition-colors flex items-center space-x-2"
-              >
-                <Plus size={16} />
-                <span>Add New Product</span>
-              </button>
-            </div>
-
-            {/* List Table */}
-            <div className="bg-white border border-neutral-200/60 rounded-[2.0rem] p-6 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-neutral-100 text-neutral-400 font-bold uppercase tracking-wider pb-3">
-                      <th className="py-3">Product</th>
-                      <th>Origin</th>
-                      <th>Price</th>
-                      <th>Rooms</th>
-                      <th>Category</th>
-                      <th>Status</th>
-                      <th className="text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {properties.map((prop) => (
-                      <tr key={prop.id} className="border-b border-neutral-50 hover:bg-neutral-50/50">
-                        <td className="py-4 font-bold text-black flex items-center space-x-3">
-                          <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
-                            <img src={prop.images[0]} alt={prop.title} className="object-cover w-full h-full" />
+                    {equipment.map(eq => (
+                      <tr key={eq.id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="px-6 py-4 font-medium text-gray-900">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 relative flex-shrink-0">
+                              {eq.images?.[0] ? (
+                                <Image src={eq.images[0]} alt="" fill className="object-cover" />
+                              ) : (
+                                <div className="w-full h-full bg-gray-200"></div>
+                              )}
+                            </div>
+                            <span>{eq.title}</span>
                           </div>
-                          <span className="max-w-[200px] truncate">{prop.title}</span>
                         </td>
-                        <td className="text-neutral-500">{prop.location}</td>
-                        <td className="font-bold text-black">${prop.price.toLocaleString()}</td>
-                        <td className="text-neutral-500">{prop.bedrooms}B / {prop.bathrooms}B</td>
-                        <td>
-                          <span className="bg-neutral-100 text-neutral-800 font-semibold px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-wider">
-                            {prop.type}
+                        <td className="px-6 py-4">{eq.type}</td>
+                        <td className="px-6 py-4">${eq.price}</td>
+                        <td className="px-6 py-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${eq.availability === 'Available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                            {eq.availability}
                           </span>
                         </td>
-                        <td>
-                          <button 
-                            onClick={() => togglePropertyStatus(prop)}
-                            className={`flex items-center space-x-1.5 font-bold uppercase tracking-widest text-[9px] ${
-                              prop.availability === 'Available' ? 'text-black' : 'text-neutral-400'
-                            }`}
-                          >
-                            {prop.availability === 'Available' ? (
-                              <><CheckCircle size={12} /> <span>In Stock</span></>
-                            ) : (
-                              <><XCircle size={12} /> <span>Out of Stock</span></>
-                            )}
-                          </button>
-                        </td>
-                        <td className="text-right space-x-2">
-                          <button 
-                            onClick={() => editProperty(prop)}
-                            className="p-2 hover:bg-neutral-100 rounded-lg text-neutral-700 hover:text-black transition-all"
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button 
-                            onClick={() => deleteProperty(prop.id)}
-                            className="p-2 hover:bg-red-50 rounded-lg text-neutral-400 hover:text-red-600 transition-all"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                        <td className="px-6 py-4 text-right">
+                          <button onClick={() => editEquipment(eq)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg mr-2"><Edit2 size={16} /></button>
+                          <button onClick={() => deleteEquipment(eq.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
                         </td>
                       </tr>
                     ))}
-                    {properties.length === 0 && (
-                      <tr>
-                        <td colSpan={7} className="py-8 text-center text-neutral-400 font-light">
-                          No products available in DB. Click "Add New Product" to add.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>
             </div>
+          )}
 
-          </div>
-        )}
-
-        {/* TAB 3: SNACKS & BULK ORDERS */}
-        {activeTab === 'shop' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between pb-2">
-              <span className="text-xs text-neutral-400 font-bold uppercase tracking-wider">{products.length} Products</span>
-              <button 
-                onClick={() => { resetProductForm(); setIsProductModalOpen(true); }}
-                className="bg-black hover:bg-neutral-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs uppercase transition-colors flex items-center space-x-2"
-              >
-                <Plus size={16} />
-                <span>Add Product</span>
-              </button>
-            </div>
-
-            {/* Products Table */}
-            <div className="bg-white border border-neutral-200/60 rounded-[2.0rem] p-6 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-neutral-100 text-neutral-400 font-bold uppercase tracking-wider pb-3">
-                      <th className="py-3">Product Name</th>
-                      <th>Category</th>
-                      <th>Price</th>
-                      <th>Stock Level</th>
-                      <th>Status</th>
-                      <th className="text-right">Actions</th>
+          {activeTab === 'snacks' && (
+            <div>
+              <div className="flex justify-between items-center mb-8">
+                <h1 className="text-2xl font-bold text-gray-900">Snacks Inventory</h1>
+                <button onClick={() => { resetSnackForm(); setIsSnackModalOpen(true); }} className="bg-[var(--text-dark)] text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2">
+                  <Plus size={18} />
+                  <span>Add Snack</span>
+                </button>
+              </div>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <table className="w-full text-left text-sm text-gray-600">
+                  <thead className="bg-gray-50 border-b border-gray-200 text-gray-900">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold">Name</th>
+                      <th className="px-6 py-4 font-semibold">Category</th>
+                      <th className="px-6 py-4 font-semibold">Stock</th>
+                      <th className="px-6 py-4 font-semibold">Price</th>
+                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((prod) => (
-                      <tr key={prod.id} className="border-b border-neutral-50 hover:bg-neutral-50/50">
-                        <td className="py-4 font-bold text-black flex items-center space-x-3">
-                          <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-neutral-100 flex-shrink-0">
-                            <img src={prod.image} alt={prod.name} className="object-cover w-full h-full" />
+                    {snacks.map(snk => (
+                      <tr key={snk.id} className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="px-6 py-4 font-medium text-gray-900">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 relative flex-shrink-0">
+                              {snk.image ? (
+                                <Image src={snk.image} alt="" fill className="object-cover" />
+                              ) : (
+                                <div className="w-full h-full bg-gray-200"></div>
+                              )}
+                            </div>
+                            <span>{snk.name}</span>
                           </div>
-                          <span className="max-w-[200px] truncate">{prod.name}</span>
                         </td>
-                        <td className="text-neutral-500">{prod.category}</td>
-                        <td className="font-bold text-black">${prod.price.toLocaleString()}</td>
-                        <td className="text-neutral-500 font-medium">{prod.stock} units</td>
-                        <td>
-                          <button 
-                            onClick={() => toggleProductStatus(prod)}
-                            className={`flex items-center space-x-1.5 font-bold uppercase tracking-widest text-[9px] ${
-                              prod.availability === 'In Stock' ? 'text-black' : 'text-neutral-400'
-                            }`}
-                          >
-                            {prod.availability === 'In Stock' ? (
-                              <><CheckCircle size={12} /> <span>In Stock</span></>
-                            ) : (
-                              <><XCircle size={12} /> <span>Out of Stock</span></>
-                            )}
-                          </button>
-                        </td>
-                        <td className="text-right space-x-2">
-                          <button 
-                            onClick={() => editProduct(prod)}
-                            className="p-2 hover:bg-neutral-100 rounded-lg text-neutral-700 hover:text-black transition-all"
-                          >
-                            <Edit size={14} />
-                          </button>
-                          <button 
-                            onClick={() => deleteProduct(prod.id)}
-                            className="p-2 hover:bg-red-50 rounded-lg text-neutral-400 hover:text-red-600 transition-all"
-                          >
-                            <Trash2 size={14} />
-                          </button>
+                        <td className="px-6 py-4">{snk.category}</td>
+                        <td className="px-6 py-4">{snk.stock}</td>
+                        <td className="px-6 py-4">${snk.price}</td>
+                        <td className="px-6 py-4 text-right">
+                          <button onClick={() => editSnack(snk)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg mr-2"><Edit2 size={16} /></button>
+                          <button onClick={() => deleteSnack(snk.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
                         </td>
                       </tr>
                     ))}
-                    {products.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="py-8 text-center text-neutral-400 font-light">
-                          No products found. Click "Add Product" to populate your store.
-                        </td>
-                      </tr>
-                    )}
                   </tbody>
                 </table>
               </div>
             </div>
+          )}
 
-          </div>
-        )}
-
-        {/* TAB 4: LEADS */}
-        {activeTab === 'leads' && (
-          <div className="space-y-6">
-            <div className="bg-white border border-neutral-200/60 rounded-[2.0rem] p-6 shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs border-collapse">
-                  <thead>
-                    <tr className="border-b border-neutral-100 text-neutral-400 font-bold uppercase tracking-wider pb-3">
-                      <th className="py-3">Client</th>
-                      <th>Phone</th>
-                      <th>Email</th>
-                      <th>Type</th>
-                      <th>Reference Listing</th>
-                      <th>Message Details</th>
-                      <th>Timestamp</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {enquiries.map((enq) => (
-                      <tr key={enq.id} className="border-b border-neutral-50 hover:bg-neutral-50/50">
-                        <td className="py-4 font-bold text-black">{enq.name}</td>
-                        <td className="text-neutral-500 font-semibold">{enq.phone}</td>
-                        <td className="text-neutral-400 font-light">{enq.email || '-'}</td>
-                        <td>
-                          <span className={`text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${
-                            enq.type === 'whatsapp' ? 'bg-[#25D366]/10 text-[#25D366]' :
-                            enq.type === 'inspection' ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-600'
-                          }`}>
-                            {enq.type}
-                          </span>
-                        </td>
-                        <td className="font-bold text-black">{enq.targetTitle || 'General Enquiry'}</td>
-                        <td className="text-neutral-500 font-light max-w-sm truncate whitespace-pre-wrap">{enq.message || '-'}</td>
-                        <td className="text-neutral-400">{new Date(enq.createdAt).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                    {enquiries.length === 0 && (
-                      <tr>
-                        <td colSpan={7} className="py-8 text-center text-neutral-400 font-light">
-                          No leads logged yet. Perform inspection bookings or WhatsApp clicks on the client page to test.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+          {activeTab === 'enquiries' && (
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-8">Recent Enquiries</h1>
+              <div className="grid gap-4">
+                {enquiries.length === 0 ? (
+                  <div className="p-8 text-center bg-white rounded-2xl border border-gray-200 text-gray-500">
+                    No enquiries yet.
+                  </div>
+                ) : (
+                  enquiries.map(enq => (
+                    <div key={enq.id} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <h3 className="font-bold text-gray-900">{enq.name}</h3>
+                          <p className="text-sm text-gray-500">{enq.phone} {enq.email && `• ${enq.email}`}</p>
+                        </div>
+                        <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full uppercase tracking-wider">
+                          {enq.type}
+                        </span>
+                      </div>
+                      {enq.message && <p className="text-gray-700 bg-gray-50 p-4 rounded-xl text-sm">{enq.message}</p>}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </main>
+      </div>
 
-      </main>
-
-      {/* MODAL 1: PROPERTY FORM */}
-      {isPropertyModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-neutral-200 rounded-[2rem] w-full max-w-xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl space-y-6">
-            
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-              <h3 className="text-lg font-bold font-serif text-black uppercase tracking-wide">
-                {isEditingProperty ? 'Edit Product Details' : 'Add New Bakery Product'}
-              </h3>
-              <button 
-                onClick={() => setIsPropertyModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-black transition-colors"
-              >
-                <XCircle size={18} />
-              </button>
+      {/* Equipment Modal */}
+      {isEquipmentModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden my-8">
+            <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10">
+              <h2 className="text-xl font-bold">{editingEquipmentId ? 'Edit Equipment' : 'Add Equipment'}</h2>
+              <button onClick={() => setIsEquipmentModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={24} /></button>
             </div>
-
-            <form onSubmit={handlePropertySubmit} className="space-y-4 text-xs font-semibold">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleEquipmentSubmit} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                <input required type="text" value={equipmentForm.title} onChange={e => setEquipmentForm({...equipmentForm, title: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-20 outline-none transition-all" />
+              </div>
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={propertyForm.title}
-                    onChange={(e) => setPropertyForm({...propertyForm, title: e.target.value})}
-                    placeholder="e.g. Chocolate Wedding Cake"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Type</label>
-                  <select 
-                    value={propertyForm.type}
-                    onChange={(e) => setPropertyForm({...propertyForm, type: e.target.value})}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  >
-                    {categories.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                  <select value={equipmentForm.type} onChange={e => setEquipmentForm({...equipmentForm, type: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none">
+                    <option>Slicing</option>
+                    <option>Frying</option>
+                    <option>Grinding</option>
+                    <option>Packaging</option>
+                    <option>Other</option>
                   </select>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Location/Origin</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={propertyForm.location}
-                    onChange={(e) => setPropertyForm({...propertyForm, location: e.target.value})}
-                    placeholder="e.g. Lagos, Nigeria"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                  <input required type="number" value={equipmentForm.price} onChange={e => setEquipmentForm({...equipmentForm, price: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none" />
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Price (₦ NGN)</label>
-                  <input 
-                    type="number" 
-                    required
-                    value={propertyForm.price}
-                    onChange={(e) => setPropertyForm({...propertyForm, price: e.target.value})}
-                    placeholder="e.g. 15000"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
+                  <input type="text" value={equipmentForm.capacity} onChange={e => setEquipmentForm({...equipmentForm, capacity: e.target.value})} placeholder="e.g. 500kg/hr" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Power</label>
+                  <input type="text" value={equipmentForm.power} onChange={e => setEquipmentForm({...equipmentForm, power: e.target.value})} placeholder="e.g. 2.2kW" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none" />
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Portions/Servings</label>
-                  <input 
-                    type="number" 
-                    value={propertyForm.bedrooms}
-                    onChange={(e) => setPropertyForm({...propertyForm, bedrooms: e.target.value})}
-                    placeholder="e.g. 20"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Stock Quantity</label>
-                  <input 
-                    type="number" 
-                    value={propertyForm.bathrooms}
-                    onChange={(e) => setPropertyForm({...propertyForm, bathrooms: e.target.value})}
-                    placeholder="e.g. 5"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Description</label>
-                <textarea 
-                  rows={3}
-                  value={propertyForm.description}
-                  onChange={(e) => setPropertyForm({...propertyForm, description: e.target.value})}
-                  placeholder="Describe the architectural design assets, building automation etc..."
-                  className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea required rows={4} value={equipmentForm.description} onChange={e => setEquipmentForm({...equipmentForm, description: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none"></textarea>
               </div>
-
-              {/* Image upload widget */}
               <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Property Images</label>
-                <div className="flex items-center space-x-2">
-                  <button 
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploadingImage}
-                    className="bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 px-4 py-2.5 rounded-xl text-neutral-700 flex items-center space-x-2"
-                  >
-                    <Upload size={14} />
-                    <span>{uploadingImage ? 'Uploading...' : 'Upload Image'}</span>
-                  </button>
-                  <input 
-                    type="file" 
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 'property')}
-                    className="hidden"
-                  />
-                </div>
-                
-                {/* Image Previews */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {propertyForm.images.map((img, i) => (
-                    <div key={i} className="relative w-16 h-16 border rounded-lg overflow-hidden bg-neutral-50">
-                      <img src={img} className="w-full h-full object-cover" />
-                      <button 
-                        type="button"
-                        onClick={() => setPropertyForm(prev => ({ ...prev, images: prev.images.filter((_, idx) => idx !== i) }))}
-                        className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg p-0.5"
-                      >
-                        <Trash2 size={10} />
-                      </button>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <select value={equipmentForm.availability} onChange={e => setEquipmentForm({...equipmentForm, availability: e.target.value as any})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none">
+                  <option>Available</option>
+                  <option>Sold</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Images</label>
+                <input type="file" accept="image/*" className="hidden" ref={eqFileInputRef} onChange={e => handleImageUpload(e, 'equipment')} />
+                <div className="flex gap-4 flex-wrap">
+                  {equipmentForm.images.map((img, i) => (
+                    <div key={i} className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200">
+                      <Image src={img} alt="" fill className="object-cover" />
+                      <button type="button" onClick={() => setEquipmentForm({...equipmentForm, images: equipmentForm.images.filter((_, idx) => idx !== i)})} className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm text-red-500"><X size={12} /></button>
                     </div>
                   ))}
+                  <button type="button" onClick={() => eqFileInputRef.current?.click()} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-500 hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors">
+                    {uploadingImage ? <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div> : <Upload size={24} />}
+                  </button>
                 </div>
               </div>
-
-              <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Availability</label>
-                <div className="flex space-x-4">
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      name="availability" 
-                      value="Available"
-                      checked={propertyForm.availability === 'Available'}
-                      onChange={() => setPropertyForm({...propertyForm, availability: 'Available'})}
-                    />
-                    <span>In Stock</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      name="availability" 
-                      value="Sold"
-                      checked={propertyForm.availability === 'Sold'}
-                      onChange={() => setPropertyForm({...propertyForm, availability: 'Sold'})}
-                    />
-                    <span>Out of Stock</span>
-                  </label>
-                </div>
+              <div className="pt-6 border-t border-gray-100 flex justify-end sticky bottom-0 bg-white z-10 pb-4">
+                <button type="button" onClick={() => setIsEquipmentModalOpen(false)} className="px-6 py-3 text-gray-600 font-medium hover:bg-gray-50 rounded-xl mr-3">Cancel</button>
+                <button type="submit" className="px-6 py-3 bg-[var(--text-dark)] text-white font-medium rounded-xl hover:bg-black transition-colors">Save Equipment</button>
               </div>
-
-              <div className="pt-4 border-t border-neutral-100 flex items-center justify-end space-x-3">
-                <button 
-                  type="button" 
-                  onClick={() => setIsPropertyModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-neutral-350 hover:border-black transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="bg-black hover:bg-neutral-800 text-white px-6 py-2.5 rounded-xl transition-colors uppercase tracking-wider text-[10px]"
-                >
-                  {isEditingProperty ? 'Save Changes' : 'Create Listing'}
-                </button>
-              </div>
-
             </form>
           </div>
         </div>
       )}
 
-      {/* MODAL 2: PRODUCT FORM */}
-      {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-neutral-200 rounded-[2rem] w-full max-w-xl p-8 shadow-2xl space-y-6">
-            
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-              <h3 className="text-lg font-bold font-serif text-black uppercase tracking-wide">
-                {isEditingProduct ? 'Edit Snack / Bulk Product' : 'Add New Snack / Bulk Product'}
-              </h3>
-              <button 
-                onClick={() => setIsProductModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-black transition-colors"
-              >
-                <XCircle size={18} />
-              </button>
+      {/* Snack Modal */}
+      {isSnackModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-2xl overflow-hidden my-8">
+            <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 sticky top-0 z-10">
+              <h2 className="text-xl font-bold">{editingSnackId ? 'Edit Snack' : 'Add Snack'}</h2>
+              <button onClick={() => setIsSnackModalOpen(false)} className="text-gray-400 hover:text-gray-600"><X size={24} /></button>
             </div>
-
-            <form onSubmit={handleProductSubmit} className="space-y-4 text-xs font-semibold">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSnackSubmit} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                <input required type="text" value={snackForm.name} onChange={e => setSnackForm({...snackForm, name: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] focus:ring-opacity-20 outline-none transition-all" />
+              </div>
+              <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={productForm.name}
-                    onChange={(e) => setProductForm({...productForm, name: e.target.value})}
-                    placeholder="e.g. Bouclé Lounge Chair"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select value={snackForm.category} onChange={e => setSnackForm({...snackForm, category: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none">
+                    <option>Plantain Chips</option>
+                    <option>Peanut Burger</option>
+                    <option>Kuli Kuli</option>
+                    <option>Other</option>
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Category</label>
-                  <select 
-                    value={productForm.category}
-                    onChange={(e) => setProductForm({...productForm, category: e.target.value})}
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  >
-                    {shopCategories.map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                  <input required type="number" value={snackForm.price} onChange={e => setSnackForm({...snackForm, price: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
+                  <input required type="number" value={snackForm.stock} onChange={e => setSnackForm({...snackForm, stock: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <select value={snackForm.availability} onChange={e => setSnackForm({...snackForm, availability: e.target.value as any})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none">
+                    <option>In Stock</option>
+                    <option>Out of Stock</option>
                   </select>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Price (USD)</label>
-                  <input 
-                    type="number" 
-                    required
-                    value={productForm.price}
-                    onChange={(e) => setProductForm({...productForm, price: e.target.value})}
-                    placeholder="e.g. 599"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Stock Quantity</label>
-                  <input 
-                    type="number" 
-                    required
-                    value={productForm.stock}
-                    onChange={(e) => setProductForm({...productForm, stock: e.target.value})}
-                    placeholder="e.g. 10"
-                    className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Description</label>
-                <textarea 
-                  rows={3}
-                  value={productForm.description}
-                  onChange={(e) => setProductForm({...productForm, description: e.target.value})}
-                  placeholder="Detail features, sizing, upholstery specs, smart capabilities..."
-                  className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea required rows={4} value={snackForm.description} onChange={e => setSnackForm({...snackForm, description: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[var(--primary)] outline-none"></textarea>
               </div>
-
               <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Product Image</label>
-                <div className="flex items-center space-x-2">
-                  <button 
-                    type="button"
-                    onClick={() => prodFileInputRef.current?.click()}
-                    disabled={uploadingImage}
-                    className="bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 px-4 py-2.5 rounded-xl text-neutral-700 flex items-center space-x-2"
-                  >
-                    <Upload size={14} />
-                    <span>{uploadingImage ? 'Uploading...' : 'Upload Image'}</span>
-                  </button>
-                  <input 
-                    type="file" 
-                    ref={prodFileInputRef}
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, 'product')}
-                    className="hidden"
-                  />
-                </div>
-                {productForm.image && (
-                  <div className="relative w-20 h-20 border rounded-lg overflow-hidden bg-neutral-50 mt-3">
-                    <img src={productForm.image} className="w-full h-full object-cover" />
-                    <button 
-                      type="button"
-                      onClick={() => setProductForm(prev => ({ ...prev, image: '' }))}
-                      className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg p-0.5"
-                    >
-                      <Trash2 size={10} />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                <input type="file" accept="image/*" className="hidden" ref={snackFileInputRef} onChange={e => handleImageUpload(e, 'snack')} />
+                <div className="flex gap-4">
+                  {snackForm.image && (
+                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-gray-200">
+                      <Image src={snackForm.image} alt="" fill className="object-cover" />
+                      <button type="button" onClick={() => setSnackForm({...snackForm, image: ''})} className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-sm text-red-500"><X size={12} /></button>
+                    </div>
+                  )}
+                  {!snackForm.image && (
+                    <button type="button" onClick={() => snackFileInputRef.current?.click()} className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center text-gray-500 hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors">
+                      {uploadingImage ? <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin"></div> : <Upload size={24} />}
                     </button>
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-[9px] uppercase font-bold text-neutral-400 tracking-wider mb-1.5">Availability</label>
-                <div className="flex space-x-4">
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      name="prodAvailability" 
-                      value="In Stock"
-                      checked={productForm.availability === 'In Stock'}
-                      onChange={() => setProductForm({...productForm, availability: 'In Stock'})}
-                    />
-                    <span>In Stock</span>
-                  </label>
-                  <label className="flex items-center space-x-2">
-                    <input 
-                      type="radio" 
-                      name="prodAvailability" 
-                      value="Out of Stock"
-                      checked={productForm.availability === 'Out of Stock'}
-                      onChange={() => setProductForm({...productForm, availability: 'Out of Stock'})}
-                    />
-                    <span>Out of Stock (Unavailable)</span>
-                  </label>
+                  )}
                 </div>
               </div>
-
-              <div className="pt-4 border-t border-neutral-100 flex items-center justify-end space-x-3">
-                <button 
-                  type="button" 
-                  onClick={() => setIsProductModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-neutral-350 hover:border-black transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="bg-black hover:bg-neutral-800 text-white px-6 py-2.5 rounded-xl transition-colors uppercase tracking-wider text-[10px]"
-                >
-                  {isEditingProduct ? 'Save Changes' : 'Create Product'}
-                </button>
+              <div className="pt-6 border-t border-gray-100 flex justify-end sticky bottom-0 bg-white z-10 pb-4">
+                <button type="button" onClick={() => setIsSnackModalOpen(false)} className="px-6 py-3 text-gray-600 font-medium hover:bg-gray-50 rounded-xl mr-3">Cancel</button>
+                <button type="submit" className="px-6 py-3 bg-[var(--text-dark)] text-white font-medium rounded-xl hover:bg-black transition-colors">Save Snack</button>
               </div>
-
             </form>
           </div>
         </div>
