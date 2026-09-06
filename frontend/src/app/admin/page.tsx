@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
       await api.login(username, password);
       router.push('/admin/dashboard');
     } catch (err) {
-      setError('Invalid username or password. Try homehaven / Haven@123');
+      setError('Invalid username or password. Try elsgadget / ElsGadget@2026');
     } finally {
       setLoading(false);
     }
@@ -54,8 +54,8 @@ export default function AdminLoginPage() {
             <Lock className="text-white" size={20} />
           </div>
           <div>
-            <h2 className="text-2xl font-serif text-black font-semibold">Gem Crispy Console</h2>
-            <p className="text-xs text-neutral-400 mt-1">Authenticate to access property & eShop controls</p>
+            <h2 className="text-2xl font-heading text-black font-semibold tracking-tight">ELS Gadget Console</h2>
+            <p className="text-xs text-neutral-400 mt-1">Authenticate to access hardware & hub controls</p>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export default function AdminLoginPage() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="homehaven"
+                placeholder="elsgadget"
                 className="w-full bg-neutral-50 text-black border border-neutral-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:border-black transition-colors"
               />
             </div>

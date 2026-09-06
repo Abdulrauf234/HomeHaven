@@ -1,47 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
 
-.bg-primary { background-color: var(--primary); }
-.bg-accent { background-color: var(--accent); }
-.bg-secondary { background-color: var(--secondary); }
-
-.bg-primary { background-color: var(--primary); }
-.bg-accent { background-color: var(--accent); }
-.bg-secondary { background-color: var(--secondary); }
-
 :root {
-  --primary: #FDB813; /* Warm Plantain Yellow */
-  --secondary: #FFF8E7; /* Light Warm Background */
-  --accent: #E65C00; /* Deep Orange */
-  --background: #FCFCF9; /* Off-white Cream */
-  --text: #1E2E1A; /* Dark Natural Green */
-  --green-main: #2E5C31; /* Main Green */
-  
-  --primary-gold: #FDB813;
-  --chocolate-brown: #1E2E1A;
-  --soft-beige: #FFF8E7;
-  --warm-cream: #FCFCF9;
-  --text-dark: #1E2E1A;
-  
-  --gray-100: #f5f6f3;
-  --gray-200: #e7eadf;
-  --gray-300: #d2dac7;
-  --gray-400: #b5c3a7;
-  --gray-500: #93a781;
-  --gray-600: #748862;
-  --gray-700: #596b4b;
-  --gray-800: #46553d;
-  --gray-900: #3c4735;
-  --gray-950: #1e2e1a;
+  --primary: #0A0A0C; /* Deep Black */
+  --secondary: #F8F9FA; /* Soft White */
+  --accent: #111115; /* Pure Black Accent */
+  --background: #FFFFFF; /* Pure White */
+  --text: #0F172A; /* Slate 900 / Deep Text */
+  --text-muted: #64748B; /* Slate 500 / Secondary Text */
+  --border-subtle: #E2E8F0; /* Subtle Grey Border */
+  --card-bg: #F8F9FA; /* Off-white Card Background */
 }
 
 /* Tailwind 4 theme extensions */
 @theme {
-  --color-primary-gold: #FDB813;
-  --color-chocolate-brown: #1E2E1A;
-  --color-soft-beige: #FFF8E7;
-  --color-warm-cream: #FCFCF9;
-  --color-text-dark: #1E2E1A;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --color-els-black: #0A0A0C;
+  --color-els-soft: #F8F9FA;
+  --color-els-border: #E2E8F0;
+  --color-els-muted: #64748B;
 }
 
 /* Smooth Scrolling */
@@ -56,108 +33,89 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Font helpers for serif/sans overrides */
 .font-sans {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.font-serif {
-  font-family: 'Playfair Display', serif;
+.font-heading {
+  font-family: 'Space Grotesk', sans-serif;
 }
 
-/* Glassmorphism Classes */
-.glass {
-  background: rgba(253, 249, 243, 0.7);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(74, 44, 29, 0.08);
+/* Minimalist Glass & Cards */
+.glass-nav {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-  border: 1px solid rgba(212, 160, 23, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(74, 44, 29, 0.04);
+.glass-dark-nav {
+  background: rgba(10, 10, 12, 0.80);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
-.glass-dark {
-  background: rgba(74, 44, 29, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.tech-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-card:hover {
+  border-color: #0A0A0C;
+  transform: translateY(-2px);
+}
+
+.tech-card-dark {
+  background: #111115;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-card-dark:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 /* Scrollbar Customization */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FDF9F3;
+  background: #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4A2C1D;
-  border-radius: 4px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4A017;
+  background: #0A0A0C;
 }
 
-/* Animations */
-@keyframes float-luxury {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-16px) rotate(1deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+/* Minimal subtle floating animation */
+@keyframes float-subtle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
 }
 
-@keyframes float-slow {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(-1deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+.animate-float-subtle {
+  animation: float-subtle 6s ease-in-out infinite;
 }
 
-@keyframes float-fast {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(2deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
+/* Minimal grid dot pattern */
+.pattern-grid {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.pattern-grid-dark {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
-
-.animate-float-luxury {
-  animation: float-luxury 6s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.animate-float-fast {
-  animation: float-fast 4s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 25s linear infinite;
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.35; }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 8s ease-in-out infinite;
-}
-
-/* Floating pattern background */
-.pattern-dots {
-  background-image: radial-gradient(rgba(74, 44, 29, 0.1) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
-}
-
